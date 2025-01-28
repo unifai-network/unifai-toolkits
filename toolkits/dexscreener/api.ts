@@ -1,13 +1,8 @@
-import { ActionContext, API, APIConfig } from 'unifai-sdk';
+import { API } from 'unifai-sdk';
 
-const API_ENDPOINT = 'https://api.dexscreener.com';
-
-export class CoingeckoAPI extends API {
-  constructor(config: APIConfig = {apiKey: ''}) {
-    if (!config.endpoint) {
-      config.endpoint = API_ENDPOINT;
-    }
-    super(config);
+export class DexscreenerAPI extends API {
+  constructor() {
+    super({endpoint: 'https://api.dexscreener.com'});
   }
 
   public async searchToken(q: string) {

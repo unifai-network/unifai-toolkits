@@ -1,0 +1,8 @@
+[project]
+name = "defillama"
+version = "0.1.0"
+description = "DefiLlama toolkit"
+requires-python = ">=3.10"
+dependencies = [
+    "unifai-sdk>=0.2.1",
+]

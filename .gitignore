@@ -5,6 +5,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 .env
 *.egg-info/
 dist/
@@ -22,3 +23,4 @@ coverage/
 .DS_Store
 
 local/
+*.log

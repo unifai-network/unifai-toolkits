@@ -1,6 +1,6 @@
-import { CoingeckoAPI } from './api';
+import { DexscreenerAPI } from './api';
 
-const api = new CoingeckoAPI();
+const api = new DexscreenerAPI();
 
 export const tokenAddressMap = {
   "SOL": {

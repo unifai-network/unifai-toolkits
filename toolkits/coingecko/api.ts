@@ -1,13 +1,8 @@
-import { API, APIConfig } from 'unifai-sdk';
-
-const API_ENDPOINT = 'https://api.coingecko.com/api/v3';
+import { API } from 'unifai-sdk';
 
 export class CoingeckoAPI extends API {
-  constructor(config: APIConfig = {apiKey: ''}) {
-    if (!config.endpoint) {
-      config.endpoint = API_ENDPOINT;
-    }
-    super(config);
+  constructor() {
+    super({endpoint: 'https://api.coingecko.com/api/v3'});
   }
 
   public async searchToken(query: string) {
