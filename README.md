@@ -1,6 +1,6 @@
 # Unifai Network Toolkits
 
-Official collection of toolkits for Unifai Network - an AI-native platform enabling dynamic tools and seamless agent-to-agent communication.
+Official toolkits for Unifai Network - an AI-native platform enabling dynamic tools and seamless agent-to-agent communication.
 
 ## Getting Started
 
@@ -8,6 +8,8 @@ To build or use toolkits, check out our SDKs:
 
 - [JavaScript/TypeScript SDK](https://github.com/unifai-network/unifai-sdk-js)
 - [Python SDK](https://github.com/unifai-network/unifai-sdk-py)
+
+If your toolkit requires creating and sending transactions, you should put the transaction building logic in [transaction-builder](https://github.com/unifai-network/transaction-builder).
 
 ## Contributing
 
@@ -23,4 +25,3 @@ Your toolkit should be:
 - Self-contained and independent
 - Well-tested with major LLM providers
 - Following best practices for code quality
-- Properly documented with clear usage examples
