@@ -1,0 +1,15 @@
+{
+  "name": "solana",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.0",
+    "dotenv": "^16.4.7",
+    "unifai-sdk": "^0.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "ts-node": "^10.9.2"
+  }
+}
