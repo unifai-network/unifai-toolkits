@@ -25,3 +25,7 @@ Your toolkit should be:
 - Self-contained and independent
 - Well-tested with major LLM providers
 - Following best practices for code quality
+
+Python toolkits in this repository should be runnable using `uv run .` inside the toolkit directory.
+
+JavaScript toolkits should be runnable using `npm start` inside the toolkit directory.
