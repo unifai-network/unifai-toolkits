@@ -1,0 +1,27 @@
+import feedparser
+
+def fetch_rss_web3_news(limit_per_feed=5):
+    rss_urls = [
+        "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml",
+        "https://cointelegraph.com/rss",
+        "https://decrypt.co/feed",
+        "https://www.theblock.co/rss",
+        "https://cryptoslate.com/feed/"
+    ]
+    
+    news_items = []
+    
+    for url in rss_urls:
+        feed = feedparser.parse(url)
+        source_title = feed.feed.title if 'title' in feed.feed else 'Unknown Source'
+        for entry in feed.entries[:limit_per_feed]:  # Fetch latest `limit_per_feed` articles from each feed
+            news = {
+                "title": entry.title,
+                "link": entry.link,
+                "published": entry.published if 'published' in entry else "N/A",
+                "source": source_title,
+                "summary": entry.summary if 'summary' in entry else "N/A"
+            }
+            news_items.append(news)
+    
+    return news_items

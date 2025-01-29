@@ -1,0 +1,9 @@
+[project]
+name = "web3news"
+version = "0.1.0"
+description = "Fetch the latest Web3 news"
+requires-python = ">=3.10"
+dependencies = [
+    "feedparser>=6.0.11",
+    "unifai-sdk>=0.2.1",
+]

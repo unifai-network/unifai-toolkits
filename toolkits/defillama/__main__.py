@@ -39,41 +39,44 @@ if __name__ == "__main__":
         limit: Optional[int] = Field(default=10, ge=1, le=100, description="Number of pools to return (max 100)")
 
     @toolkit.action(
-        action="get_pools",
+        action="getDefiPools",
         action_description='Get data of defi pools such as total value locked (tvl), annual percentage yield (apy), yield, etc.',
         payload_description=PoolsPayload.model_json_schema()["properties"]
     )
     async def get_pools(ctx: unifai.ActionContext, payload={}):
-        params = PoolsPayload(**payload)
-        pools = await api.get_pools()
-        filtered_pools = pools
+        try:
+            params = PoolsPayload(**payload)
+            pools = await api.get_pools()
+            filtered_pools = pools
 
-        if params.minTvl is not None:
-            filtered_pools = [p for p in filtered_pools if p.get("tvlUsd", 0) >= params.minTvl]
+            if params.minTvl is not None:
+                filtered_pools = [p for p in filtered_pools if p.get("tvlUsd", 0) >= params.minTvl]
 
-        if params.maxTvl is not None:
-            filtered_pools = [p for p in filtered_pools if p.get("tvlUsd", 0) <= params.maxTvl]
+            if params.maxTvl is not None:
+                filtered_pools = [p for p in filtered_pools if p.get("tvlUsd", 0) <= params.maxTvl]
 
-        if params.minApy is not None:
-            filtered_pools = [p for p in filtered_pools if p.get("apy", 0) >= params.minApy]
+            if params.minApy is not None:
+                filtered_pools = [p for p in filtered_pools if p.get("apy", 0) >= params.minApy]
 
-        if params.maxApy is not None:
-            filtered_pools = [p for p in filtered_pools if p.get("apy", 0) <= params.maxApy]
+            if params.maxApy is not None:
+                filtered_pools = [p for p in filtered_pools if p.get("apy", 0) <= params.maxApy]
 
-        if params.symbols:
-            filtered_pools = [p for p in filtered_pools if p.get("symbol") and p["symbol"].lower() in {s.lower() for s in params.symbols}]
+            if params.symbols:
+                filtered_pools = [p for p in filtered_pools if p.get("symbol") and p["symbol"].lower() in {s.lower() for s in params.symbols}]
 
-        if params.projects:
-            filtered_pools = [p for p in filtered_pools if p.get("project") and p["project"].lower() in {proj.lower() for proj in params.projects}]
+            if params.projects:
+                filtered_pools = [p for p in filtered_pools if p.get("project") and p["project"].lower() in {proj.lower() for proj in params.projects}]
 
-        if params.chains:
-            filtered_pools = [p for p in filtered_pools if p.get("chain") and p["chain"].lower() in {chain.lower() for chain in params.chains}]
+            if params.chains:
+                filtered_pools = [p for p in filtered_pools if p.get("chain") and p["chain"].lower() in {chain.lower() for chain in params.chains}]
 
-        sort_map = {"tvl": "tvlUsd", "apy": "apy", "apymean30d": "apyMean30d"}
-        sort_key = sort_map.get(params.sortBy.lower(), "apy")
+            sort_map = {"tvl": "tvlUsd", "apy": "apy", "apymean30d": "apyMean30d"}
+            sort_key = sort_map.get(params.sortBy.lower(), "apy")
 
-        filtered_pools.sort(key=lambda x: x.get(sort_key, 0), reverse=True)
+            filtered_pools.sort(key=lambda x: x.get(sort_key, 0), reverse=True)
 
-        return ctx.Result(filtered_pools[:params.limit])
+            return ctx.Result(filtered_pools[:params.limit])
+        except Exception as e:
+            return ctx.Result({"error": str(e)})
 
     asyncio.run(toolkit.run())
