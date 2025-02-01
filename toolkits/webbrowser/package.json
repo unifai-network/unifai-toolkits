@@ -6,7 +6,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "puppeteer": "^24.1.1",
-    "unifai-sdk": "^0.2.4"
+    "unifai-sdk": "^0.2.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.10",
