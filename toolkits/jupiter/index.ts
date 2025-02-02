@@ -1,9 +1,10 @@
-import { PublicKey } from '@solana/web3.js';
 import * as dotenv from 'dotenv';
+dotenv.config();
+
+import { PublicKey } from '@solana/web3.js';
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
 import { getTokenBySymbol } from '../dexscreener/dexscreener';
 
-dotenv.config();
 
 async function getSolanaTokenAddress(token: string) : Promise<string> {
   try {
@@ -21,7 +22,7 @@ async function main() {
 
   await toolkit.updateToolkit({
     name: 'Jupiter',
-    description: "Jupiter provides smooth and efficient token swaps on the Solana blockchain",
+    description: "Jupiter is a swap aggregator on the Solana blockchain",
   });
 
   toolkit.event('ready', () => {
@@ -30,7 +31,7 @@ async function main() {
 
   toolkit.action({
     action: 'swap',
-    actionDescription: 'Swap tokens on Jupiter',
+    actionDescription: 'Swap tokens on Solana blockchain using Jupiter',
     payloadDescription: {
       inputToken: {
         type: 'string',

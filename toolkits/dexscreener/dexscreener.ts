@@ -9,6 +9,16 @@ export const tokenAddressMap = {
       "tokenAddress": "So11111111111111111111111111111111111111112",
     },
   },
+  "ETH": {
+    "ethereum": {
+      "chain": "ethereum",
+      "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    },
+    "base": {
+      "chain": "base",
+      "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    },
+  },
 }
 
 function getLiquidity(pair: any) {

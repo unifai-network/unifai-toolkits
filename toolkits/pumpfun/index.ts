@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
 
-dotenv.config();
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });

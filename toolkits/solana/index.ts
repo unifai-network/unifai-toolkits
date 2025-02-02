@@ -1,9 +1,10 @@
 import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { PublicKey, Connection, clusterApiUrl, LAMPORTS_PER_SOL, ParsedAccountData } from '@solana/web3.js';
 import { Toolkit, ActionContext } from 'unifai-sdk';
 import { getTokenBySymbol } from '../dexscreener/dexscreener';
 
-dotenv.config();
 
 const connection = new Connection(process.env.SOLANA_RPC_URL || clusterApiUrl('mainnet-beta'), 'confirmed');
 

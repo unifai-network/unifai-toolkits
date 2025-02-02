@@ -18,8 +18,8 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Base',
-    description: "Transfer tokens on Base blockchain",
+    name: '1inch',
+    description: "1inch is a swap aggregator on any EVM compatible blockchain, e.g. Ethereum, Base, etc.",
   });
 
   toolkit.event('ready', () => {
@@ -27,40 +27,41 @@ async function main() {
   });
 
   toolkit.action({
-    action: 'transfer',
-    actionDescription: 'Transfer tokens on Base blockchain',
+    action: 'swap',
+    actionDescription: 'Swap tokens on any EVM compatible blockchain (e.g. Ethereum, Base, etc.) using 1inch',
     payloadDescription: {
-      recipientWalletAddress: {
+      chain: {
         type: 'string',
-        description: 'Recipient Base wallet address',
+        description: 'Chain name, e.g. ethereum, base, etc.',
+        required: true,
+      },
+      inputToken: {
+        type: 'string',
+        description: 'Input token address or contract address or symbol or ticker',
+        required: true,
+      },
+      outputToken: {
+        type: 'string',
+        description: 'Output token address or contract address or symbol or ticker',
         required: true,
       },
       amount: {
         type: 'number',
-        description: 'Amount of tokens to transfer',
+        description: 'Amount of input token to swap',
         required: true,
       },
-      token: {
-        type: 'string',
-        description: 'Token address or contract address or symbol or ticker, leave empty to transfer native ETH',
+      slippage: {
+        type: 'number',
+        description: 'Slippage percentage, default is 1 (which means 1%)',
         required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let token = payload.token;
-      if (token && (token.toLowerCase() === 'eth' || token.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')) {
-        token = undefined;
-      }
-      if (token) {
-        token = await getBaseTokenAddress(token);
-      }
-      const result = await api.createTransaction('evm/transfer', ctx, {
-        chain: 'base',
-        recipient: payload.recipientWalletAddress,
-        amount: payload.amount.toString(),
-        token: token,
-      });
+      payload.inputToken = await getBaseTokenAddress(payload.inputToken);
+      payload.outputToken = await getBaseTokenAddress(payload.outputToken);
+      payload.amount = payload.amount.toString();
+      const result = await api.createTransaction('1inch/swap', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });

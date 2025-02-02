@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { Toolkit, ActionContext } from 'unifai-sdk';
 import { fetchWebPageTextContent } from './puppeteer';
 
-dotenv.config();
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
