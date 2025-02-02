@@ -22,7 +22,7 @@ async function main() {
 
   await toolkit.updateToolkit({
     name: 'Solana',
-    description: "Get account information on Solana",
+    description: "Get account information on Solana blockchain",
   });
 
   toolkit.event('ready', () => {

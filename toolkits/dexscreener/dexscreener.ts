@@ -19,14 +19,19 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
   if (tokenAddressMap[symbol]) {
     return tokenAddressMap[symbol];
   }
-  const result = await api.searchToken(symbol);
+
+  let query = symbol;
+  if (chainId) {
+    query += ` ${chainId}`;
+  }
+  const result = await api.searchToken(query);
 
   if (!result.pairs || result.pairs.length === 0) {
     return { error: 'Token not found' };
   }
 
   let pairs = result.pairs.filter(
-    (pair: any) => pair.baseToken.symbol.toLowerCase() === symbol.toLowerCase(),
+    (pair: any) => pair.baseToken.symbol.toLowerCase() === symbol.toLowerCase() || pair.quoteToken.symbol.toLowerCase() === symbol.toLowerCase(),
   );
 
   if (chainId) {
@@ -42,7 +47,7 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
   return {
     [pairs[0].chainId]: {
       chain: pairs[0].chainId,
-      tokenAddress: pairs[0].baseToken.address,
+      tokenAddress: pairs[0].baseToken.symbol.toLowerCase() === symbol.toLowerCase() ? pairs[0].baseToken.address : pairs[0].quoteToken.address,
       priceUsd: pairs[0].priceUsd,
       liquidityUsd: pairs[0].liquidity?.usd,
       volume24hUsd: pairs[0].volume?.h24,
