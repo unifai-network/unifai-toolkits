@@ -18,8 +18,8 @@ async function main() {
   });
 
   toolkit.action({
-    action: 'getTokenBySymbol',
-    actionDescription: 'Get token address (a.k.a. contract address) and some basic information (price, liquidity, volume, fdv, market cap) by token symbol (a.k.a. ticker)',
+    action: 'getTokenAddressBySymbol',
+    actionDescription: 'Get token address (a.k.a. contract address) by token symbol (a.k.a. ticker)',
     payloadDescription: {
       symbol: {
         type: 'string',

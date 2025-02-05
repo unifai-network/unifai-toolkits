@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { PublicKey, Connection, clusterApiUrl, LAMPORTS_PER_SOL, ParsedAccountData } from '@solana/web3.js';
-import { Toolkit, ActionContext } from 'unifai-sdk';
+import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
 import { getTokenBySymbol } from '../dexscreener/dexscreener';
 
 
@@ -20,6 +20,7 @@ async function getSolanaTokenAddress(token: string) : Promise<string> {
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
     name: 'Solana',
@@ -69,6 +70,30 @@ async function main() {
       const tokenData = tokenAccount.value?.data as ParsedAccountData;
 
       return ctx.result(`Balance of ${payload.tokenAddress}: ${tokenData.parsed?.info?.tokenAmount?.uiAmount || 0}`);
+    } catch (error) {
+      return ctx.result({ error: `Failed to get balance: ${error}` });
+    }
+  });
+
+  toolkit.action({
+    action: 'createSplToken',
+    actionDescription: 'Create an SPL token on Solana',
+    payloadDescription: {
+      decimals: {
+        type: 'number',
+        description: 'Number of decimals for the token, default is 9',
+        required: false,
+      },
+      mintAmount: {
+        type: 'number', 
+        description: 'Amount of tokens to mint, default is 1000000000',
+        required: false,
+      },
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      const result = await api.createTransaction('solana/spl-create', ctx, payload);
+      return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
     }

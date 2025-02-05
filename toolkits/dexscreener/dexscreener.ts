@@ -58,11 +58,6 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
     [pairs[0].chainId]: {
       chain: pairs[0].chainId,
       tokenAddress: pairs[0].baseToken.symbol.toLowerCase() === symbol.toLowerCase() ? pairs[0].baseToken.address : pairs[0].quoteToken.address,
-      priceUsd: pairs[0].priceUsd,
-      liquidityUsd: pairs[0].liquidity?.usd,
-      volume24hUsd: pairs[0].volume?.h24,
-      fdvUsd: pairs[0].fdv,
-      marketCap: pairs[0].marketCap,
     }
   };
 }
