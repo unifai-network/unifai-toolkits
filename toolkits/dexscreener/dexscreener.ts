@@ -2,6 +2,10 @@ import { DexscreenerAPI } from './api';
 
 const api = new DexscreenerAPI();
 
+export const tokenSymbolAlias = {
+  "bnb": "bsc",
+}
+
 export const tokenAddressMap = {
   "SOL": {
     "solana": {
@@ -18,6 +22,10 @@ export const tokenAddressMap = {
       "chain": "base",
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
+    "bsc": {
+      "chain": "bsc",
+      "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    },
   },
 }
 
@@ -26,6 +34,10 @@ function getLiquidity(pair: any) {
 }
 
 export async function getTokenBySymbol(symbol: string, chainId?: string) {
+  if (tokenSymbolAlias[symbol]) {
+    symbol = tokenSymbolAlias[symbol];
+  }
+
   if (tokenAddressMap[symbol]) {
     return tokenAddressMap[symbol];
   }

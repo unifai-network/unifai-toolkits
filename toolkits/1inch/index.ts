@@ -5,11 +5,11 @@ import { ethers } from 'ethers';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
 import { getTokenBySymbol } from '../dexscreener/dexscreener';
 
-async function getBaseTokenAddress(token: string) : Promise<string> {
+async function getTokenAddress(token: string, chain: string) : Promise<string> {
   if (ethers.isAddress(token)) {
     return token;
   }
-  const result = await getTokenBySymbol(token, 'base');
+  const result = await getTokenBySymbol(token, chain);
   return result?.base?.tokenAddress || token;
 }
 
@@ -58,8 +58,8 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      payload.inputToken = await getBaseTokenAddress(payload.inputToken);
-      payload.outputToken = await getBaseTokenAddress(payload.outputToken);
+      payload.inputToken = await getTokenAddress(payload.inputToken, payload.chain);
+      payload.outputToken = await getTokenAddress(payload.outputToken, payload.chain);
       payload.amount = payload.amount.toString();
       const result = await api.createTransaction('1inch/swap', ctx, payload);
       return ctx.result(result);
