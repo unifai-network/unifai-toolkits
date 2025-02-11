@@ -49,6 +49,44 @@ async function main() {
     }
   });
 
+  toolkit.action({
+    action: 'searchMentions',
+    actionDescription: 'Search for mentions of specific keywords on X/Twitter recently',
+    payloadDescription: {
+      keywords: {
+        type: 'string',
+        description: 'Up to 5 keywords to search for, separated by commas. Phrases accepted',
+        required: true
+      },
+      lastDays: {
+        type: 'number',
+        description: 'Number of days to search for, min is 1, max is 30',
+        default: 7,
+        required: false
+      },
+      limit: {
+        type: 'number',
+        description: 'Number of results to return, max is 30',
+        default: 30,
+        required: false
+      }
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      const to = Math.floor(Date.now() / 1000);
+      const from = to - (payload.lastDays * 24 * 60 * 60);
+      const result = await api.mentionsSearch(
+        payload.keywords,
+        from,
+        to,
+        payload.limit
+      );
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to search mentions: ${error}` });
+    }
+  });
+
   await toolkit.run();
 }
 
