@@ -1,5 +1,5 @@
 {
-  "name": "solana",
+  "name": "1inch",
   "scripts": {
     "start": "ts-node index.ts"
   },
