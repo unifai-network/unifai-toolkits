@@ -45,7 +45,7 @@ if __name__ == "__main__":
     )
     async def get_pools(ctx: unifai.ActionContext, payload={}):
         try:
-            params = PoolsPayload(**payload)
+            params = PoolsPayload.model_validate(payload)
             pools = await api.get_pools()
             filtered_pools = pools
 
