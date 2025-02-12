@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "unifai-sdk": "^0.2.5",
+    "unifai-sdk": "^0.2.6",
     "whoiser": "^1.18.0"
   },
   "devDependencies": {
