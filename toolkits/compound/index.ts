@@ -43,7 +43,7 @@ async function main() {
       asset: {
         type: 'string',
         description: 'The address of underlying',
-        required: true,
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
@@ -78,7 +78,7 @@ async function main() {
       asset: {
         type: 'string',
         description: 'The address of underlying',
-        required: true,
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
@@ -113,7 +113,7 @@ async function main() {
       asset: {
         type: 'string',
         description: 'The address of underlying',
-        required: true,
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
@@ -148,7 +148,7 @@ async function main() {
       asset: {
         type: 'string',
         description: 'The address of underlying',
-        required: true,
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
