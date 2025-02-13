@@ -1,24 +1,15 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { getFullnodeUrl, SuiClient } from '@mysten/sui/client';
+import { isValidSuiAddress } from "@mysten/sui/utils";
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
-import { getTokenBySymbol } from '../dexscreener/dexscreener';
-
-
-export const suiClient = new SuiClient({ url: process.env.SUI_FULLNODE_URL || getFullnodeUrl('mainnet') });
+import { getTokenAddressBySymbol } from '../common/tokenaddress';
 
 async function getSuiTokenAddress(token: string) : Promise<string> {
-  try {
-    const coinMetadata = await suiClient.getCoinMetadata({coinType: token});
-    if (coinMetadata) {
-      return token;
-    }
-  } catch (error) {
-    const result = await getTokenBySymbol(token, 'sui');
-    return result?.sui?.tokenAddress || token;
+  if (isValidSuiAddress(token)) {
+    return token;
   }
-  return token;
+  return await getTokenAddressBySymbol(token, 'sui') || token;
 }
 
 async function main() {
@@ -38,26 +29,37 @@ async function main() {
     action: 'swap',
     actionDescription: 'Swap tokens on Sui blockchain using Cetus',
     payloadDescription: {
-      from: {
+      inputToken: {
         type: 'string',
-        description: 'The coin type of the from token, eg: 0x2::sui::SUI',
+        description: 'Input token address or contract address (a.k.a. coin type) or symbol or ticker',
+        required: true,
       },
-      target: {
+      outputToken: {
         type: 'string',
-        description: 'The coin type of the target token, eg: 0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
+        description: 'Output token address or contract address (a.k.a. coin type) or symbol or ticker',
+        required: true,
       },
       amount: {
         type: 'number',
-        description: 'Amount of from token to swap (in human readable format, decimals will be handled automatically), eg: 0.5',
+        description: 'Amount of input token to swap',
+        required: true,
       },
       slippage: {
         type: 'number',
-        description: 'Slippage percentage, eg: 0.01 means 1% slippage',
+        description: 'Slippage, eg: 0.01 means 1% slippage',
+        required: false,
       },
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('cetus/swap', ctx, payload);
+      const from = await getSuiTokenAddress(payload.inputToken);
+      const target = await getSuiTokenAddress(payload.outputToken);
+      const result = await api.createTransaction('cetus/swap', ctx, {
+        from,
+        target,
+        amount: payload.amount,
+        slippage: payload.slippage,
+      });
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
