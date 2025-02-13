@@ -3,14 +3,13 @@ dotenv.config();
 
 import { ethers } from 'ethers';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
-import { getTokenAddressBySymbol as getTokenAddress1 } from '../dexscreener/dexscreener';
-import { getTokenAddressBySymbol as getTokenAddress2 } from '../coingecko/coingecko';
+import { getTokenAddressBySymbol } from '../common/tokenaddress';
 
 async function getTokenAddress(token: string, chain: string) : Promise<string> {
   if (ethers.isAddress(token.toLowerCase())) {
-    return token;
+    return token.toLowerCase();
   }
-  return await getTokenAddress1(token, chain) || await getTokenAddress2(token, chain) || token;
+  return await getTokenAddressBySymbol(token, chain) || token;
 }
 
 async function main() {
