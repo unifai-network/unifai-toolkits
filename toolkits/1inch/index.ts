@@ -18,7 +18,7 @@ async function main() {
 
   await toolkit.updateToolkit({
     name: '1inch',
-    description: "1inch is a swap aggregator on any EVM compatible blockchain, e.g. Ethereum, Base, etc.",
+    description: "1inch is a swap aggregator on any EVM compatible blockchain, e.g. Ethereum, Base, BSC, etc.",
   });
 
   toolkit.event('ready', () => {
@@ -27,11 +27,11 @@ async function main() {
 
   toolkit.action({
     action: 'swap',
-    actionDescription: 'Swap tokens on any EVM compatible blockchain (e.g. Ethereum, Base, etc.) using 1inch',
+    actionDescription: 'Swap tokens on any EVM compatible blockchain (e.g. Ethereum, Base, BSC, etc.) using 1inch',
     payloadDescription: {
       chain: {
         type: 'string',
-        description: 'Chain name, e.g. ethereum, base, etc.',
+        description: 'Chain name, e.g. ethereum, base, bsc, etc.',
         required: true,
       },
       inputToken: {

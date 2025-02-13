@@ -2,10 +2,6 @@ import { DexscreenerAPI } from './api';
 
 const api = new DexscreenerAPI();
 
-export const tokenSymbolAlias = {
-  "bnb": "bsc",
-}
-
 export const tokenAddressMap = {
   "sol": {
     "solana": {
@@ -22,6 +18,8 @@ export const tokenAddressMap = {
       "chain": "base",
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
+  },
+  "bnb": {
     "bsc": {
       "chain": "bsc",
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -33,18 +31,24 @@ function getLiquidity(pair: any) {
   return Math.min(pair?.liquidity?.usd - pair?.liquidity?.base * pair?.priceUsd, pair?.liquidity?.base * pair?.priceUsd) || 0;
 }
 
-export async function getTokenBySymbol(symbol: string, chainId?: string) {
-  if (tokenSymbolAlias[symbol]) {
-    symbol = tokenSymbolAlias[symbol];
-  }
+export async function getTokenBySymbol(symbol: string, chain?: string) {
+  symbol = symbol.toLowerCase();
 
-  if (tokenAddressMap[symbol.toLowerCase()]) {
-    return tokenAddressMap[symbol.toLowerCase()];
+  if (tokenAddressMap[symbol]) {
+    if (chain) {
+      if (tokenAddressMap[symbol][chain]) {
+        return {
+          [chain]: tokenAddressMap[symbol][chain],
+        };
+      }
+    } else {
+      return tokenAddressMap[symbol];
+    }
   }
 
   let query = symbol;
-  if (chainId) {
-    query += ` ${chainId}`;
+  if (chain) {
+    query += ` ${chain}`;
   }
   const result = await api.searchToken(query);
 
@@ -56,8 +60,8 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
     (pair: any) => pair.baseToken.symbol.toLowerCase() === symbol.toLowerCase() || pair.quoteToken.symbol.toLowerCase() === symbol.toLowerCase(),
   );
 
-  if (chainId) {
-    pairs = pairs.filter((pair: any) => pair.chainId.toLowerCase() === chainId.toLowerCase());
+  if (chain) {
+    pairs = pairs.filter((pair: any) => pair.chainId.toLowerCase() === chain.toLowerCase());
   }
 
   pairs = pairs.sort((a: any, b: any) => getLiquidity(b) - getLiquidity(a));
@@ -74,7 +78,7 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
   };
 }
 
-export async function getTokenAddressBySymbol(token: string, chainId: string) : Promise<string | null> {
-  const result = await getTokenBySymbol(token, chainId);
-  return result?.[chainId]?.tokenAddress || null;
+export async function getTokenAddressBySymbol(token: string, chain: string) : Promise<string | null> {
+  const result = await getTokenBySymbol(token, chain);
+  return result?.[chain]?.tokenAddress || null;
 }
