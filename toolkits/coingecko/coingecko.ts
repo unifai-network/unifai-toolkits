@@ -21,6 +21,8 @@ export const tokenAddressMap = {
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "decimal_place": 18,
     },
+  },
+  "bnb": {
     "bsc": {
       "chain": "bsc",
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -29,9 +31,19 @@ export const tokenAddressMap = {
   },
 }
 
-export async function getTokenBySymbol(symbol: string) {
-  if (tokenAddressMap[symbol.toLowerCase()]) {
-    return tokenAddressMap[symbol.toLowerCase()];
+export async function getTokenBySymbol(symbol: string, chain?: string) {
+  symbol = symbol.toLowerCase();
+
+  if (tokenAddressMap[symbol]) {
+    if (chain) {
+      if (tokenAddressMap[symbol][chain]) {
+        return {
+          [chain]: tokenAddressMap[symbol][chain],
+        };
+      }
+    } else {
+      return tokenAddressMap[symbol];
+    }
   }
   const result = await api.searchToken(symbol);
   if (result.coins && result.coins.length > 0) {
@@ -43,7 +55,7 @@ export async function getTokenBySymbol(symbol: string) {
   }
 }
 
-export async function getTokenAddressBySymbol(token: string, chainId: string) {
-  const result = await getTokenBySymbol(token);
-  return result?.[chainId]?.contract_address || token;
+export async function getTokenAddressBySymbol(token: string, chain: string) {
+  const result = await getTokenBySymbol(token, chain);
+  return result?.[chain]?.contract_address || token;
 }
