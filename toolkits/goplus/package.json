@@ -1,0 +1,14 @@
+{
+  "name": "goplus",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "unifai-sdk": "^0.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "ts-node": "^10.9.2"
+  }
+}
