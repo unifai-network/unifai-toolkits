@@ -3,8 +3,8 @@ dotenv.config();
 
 import { PublicKey, Connection, clusterApiUrl, LAMPORTS_PER_SOL, ParsedAccountData } from '@solana/web3.js';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
-import { getTokenBySymbol } from '../dexscreener/dexscreener';
-
+import { getTokenAddressBySymbol as getTokenAddress1 } from '../dexscreener/dexscreener';
+import { getTokenAddressBySymbol as getTokenAddress2 } from '../coingecko/coingecko';
 
 const connection = new Connection(process.env.SOLANA_RPC_URL || clusterApiUrl('mainnet-beta'), 'confirmed');
 
@@ -12,8 +12,7 @@ async function getSolanaTokenAddress(token: string) : Promise<string> {
   try {
     new PublicKey(token);
   } catch (error) {
-    const result = await getTokenBySymbol(token, 'solana');
-    return result?.solana?.tokenAddress || token;
+    return await getTokenAddress1(token, 'solana') || await getTokenAddress2(token, 'solana') || token;
   }
   return token;
 }

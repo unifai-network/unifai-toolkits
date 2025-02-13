@@ -7,13 +7,13 @@ export const tokenSymbolAlias = {
 }
 
 export const tokenAddressMap = {
-  "SOL": {
+  "sol": {
     "solana": {
       "chain": "solana",
       "tokenAddress": "So11111111111111111111111111111111111111112",
     },
   },
-  "ETH": {
+  "eth": {
     "ethereum": {
       "chain": "ethereum",
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
@@ -38,8 +38,8 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
     symbol = tokenSymbolAlias[symbol];
   }
 
-  if (tokenAddressMap[symbol]) {
-    return tokenAddressMap[symbol];
+  if (tokenAddressMap[symbol.toLowerCase()]) {
+    return tokenAddressMap[symbol.toLowerCase()];
   }
 
   let query = symbol;
@@ -72,4 +72,9 @@ export async function getTokenBySymbol(symbol: string, chainId?: string) {
       tokenAddress: pairs[0].baseToken.symbol.toLowerCase() === symbol.toLowerCase() ? pairs[0].baseToken.address : pairs[0].quoteToken.address,
     }
   };
+}
+
+export async function getTokenAddressBySymbol(token: string, chainId: string) : Promise<string | null> {
+  const result = await getTokenBySymbol(token, chainId);
+  return result?.[chainId]?.tokenAddress || null;
 }

@@ -3,15 +3,14 @@ dotenv.config();
 
 import { PublicKey } from '@solana/web3.js';
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
-import { getTokenBySymbol } from '../dexscreener/dexscreener';
-
+import { getTokenAddressBySymbol as getTokenAddress1 } from '../dexscreener/dexscreener';
+import { getTokenAddressBySymbol as getTokenAddress2 } from '../coingecko/coingecko';
 
 async function getSolanaTokenAddress(token: string) : Promise<string> {
   try {
     new PublicKey(token);
   } catch (error) {
-    const result = await getTokenBySymbol(token, 'solana');
-    return result?.solana?.tokenAddress || token;
+    return await getTokenAddress1(token, 'solana') || await getTokenAddress2(token, 'solana') || token;
   }
   return token;
 }

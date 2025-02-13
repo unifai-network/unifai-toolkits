@@ -3,14 +3,14 @@ dotenv.config();
 
 import { ethers } from 'ethers';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
-import { getTokenBySymbol } from '../dexscreener/dexscreener';
+import { getTokenAddressBySymbol as getTokenAddress1 } from '../dexscreener/dexscreener';
+import { getTokenAddressBySymbol as getTokenAddress2 } from '../coingecko/coingecko';
 
 async function getBaseTokenAddress(token: string) : Promise<string> {
-  if (ethers.isAddress(token)) {
+  if (ethers.isAddress(token.toLowerCase())) {
     return token;
   }
-  const result = await getTokenBySymbol(token, 'base');
-  return result?.base?.tokenAddress || token;
+  return await getTokenAddress1(token, 'base') || await getTokenAddress2(token, 'base') || token;
 }
 
 async function main() {
@@ -48,8 +48,8 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let token = payload.token;
-      if (token && (token.toLowerCase() === 'eth' || token.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')) {
+      let token = payload.token?.toLowerCase();
+      if (token && (token === 'eth' || token === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')) {
         token = undefined;
       }
       if (token) {
@@ -57,7 +57,7 @@ async function main() {
       }
       const result = await api.createTransaction('evm/transfer', ctx, {
         chain: 'base',
-        recipient: payload.recipientWalletAddress,
+        recipient: payload.recipientWalletAddress.toLowerCase(),
         amount: payload.amount.toString(),
         token: token,
       });
