@@ -78,7 +78,14 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
   };
 }
 
-export async function getTokenAddressBySymbol(token: string, chain: string) : Promise<string | null> {
+export async function getTokenAddressBySymbol(token: string, chain?: string) : Promise<string | null> {
   const result = await getTokenBySymbol(token, chain);
-  return result?.[chain]?.tokenAddress || null;
+  if (Object.keys(result).length === 0) {
+    return null;
+  }
+  if (chain) {
+    return result?.[chain]?.tokenAddress || null;
+  } else {
+    return result?.[Object.keys(result)[0]]?.tokenAddress || null;
+  }
 }
