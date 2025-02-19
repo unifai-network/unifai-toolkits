@@ -1,0 +1,15 @@
+{
+  "name": "compound",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "unifai-sdk": "^0.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "ts-node": "^10.9.2"
+  }
+}

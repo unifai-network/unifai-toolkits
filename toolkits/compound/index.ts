@@ -3,23 +3,22 @@ dotenv.config();
 
 import { ethers } from 'ethers';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
-import { getTokenBySymbol } from '../dexscreener/dexscreener'; 
+import { getTokenAddressBySymbol } from '../common/tokenaddress';
 
-async function getAssetAddress(asset: string) : Promise<string> {
-  if (ethers.isAddress(asset)) {
-    return asset;
+async function getTokenAddress(token: string, chain: string) : Promise<string> {
+  if (ethers.isAddress(token.toLowerCase())) {
+    return token.toLowerCase();
   }
-  const result = await getTokenBySymbol(asset, 'compound');
-  return result?.compound?.tokenAddress || asset; 
+  return await getTokenAddressBySymbol(token, chain) || token;
 }
 
 async function main() {
-  const toolkit = new Toolkit({ apiKey: process.env.COMPOUND_API_KEY as string});
-  const api = new TransactionAPI({ apiKey: process.env.COMPOUND_API_KEY });
+  const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY as string});
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Compound',
-    description: "Interact with the Compound lending platform",
+    name: 'Compound-V2',
+    description: "Interact with the Compound lending platform (v2).",
   });
 
   toolkit.event('ready', () => {
@@ -28,11 +27,11 @@ async function main() {
 
   toolkit.action({
     action: 'supply',
-    actionDescription: 'Supplies assets into the market and receives cTokens in exchange',
+    actionDescription: 'Supplies assets into the market and receives cTokens in exchange.',
     payloadDescription: {
-      recipientWalletAddress: {
+      chain: {
         type: 'string',
-        description: 'Recipient wallet address',
+        description: 'The chain name, only support ethereum for now.',
         required: true,
       },
       amount: {
@@ -42,18 +41,20 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The address of underlying',
+        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for ETH.',
         required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let asset = await getAssetAddress(payload.asset);
-      const result = await api.createTransaction('compound/action', ctx, {
-        recipient: payload.recipientWalletAddress,
+      if (payload.asset) {
+        payload.asset = await getTokenAddress(payload.asset, payload.chain);
+      }
+      const result = await api.createTransaction('compound/v2', ctx, {
+        action: 'supply',
+        chain: payload.chain,
         amount: payload.amount.toString(),
-        asset: asset,
-        action: 'supply' ,
+        asset: payload.asset,
       });
       return ctx.result(result);
     } catch (error) {
@@ -65,9 +66,9 @@ async function main() {
     action: 'borrow',
     actionDescription: 'Borrow tokens from Compound',
     payloadDescription: {
-      recipientWalletAddress: {
+      chain: {
         type: 'string',
-        description: 'Recipient wallet address',
+        description: 'The chain name, only support ethereum for now.',
         required: true,
       },
       amount: {
@@ -77,18 +78,20 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The address of underlying',
+        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for ETH.',
         required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let asset = await getAssetAddress(payload.asset);
-      const result = await api.createTransaction('compound/action', ctx, {
-        recipient: payload.recipientWalletAddress,
-        amount: payload.amount.toString(),
-        asset: asset,
+      if (payload.asset) {
+        payload.asset = await getTokenAddress(payload.asset, payload.chain);
+      }
+      const result = await api.createTransaction('compound/v2', ctx, {
         action: 'borrow',
+        chain: payload.chain,
+        amount: payload.amount.toString(),
+        asset: payload.asset,
       });
       return ctx.result(result);
     } catch (error) {
@@ -100,9 +103,9 @@ async function main() {
     action: 'repayBorrow',
     actionDescription: 'Repay borrowed tokens to Compound',
     payloadDescription: {
-      recipientWalletAddress: {
+      chain: {
         type: 'string',
-        description: 'Recipient wallet address',
+        description: 'The chain name, only support ethereum for now.',
         required: true,
       },
       amount: {
@@ -112,18 +115,20 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The address of underlying',
+        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for ETH.',
         required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let asset = await getAssetAddress(payload.asset);
-      const result = await api.createTransaction('compound/action', ctx, {
-        recipient: payload.recipientWalletAddress,
-        amount: payload.amount.toString(),
-        asset: asset,
+      if (payload.asset) {
+        payload.asset = await getTokenAddress(payload.asset, payload.chain);
+      }
+      const result = await api.createTransaction('compound/v2', ctx, {
         action: 'repayBorrow',
+        chain: payload.chain,
+        amount: payload.amount.toString(),
+        asset: payload.asset,
       });
       return ctx.result(result);
     } catch (error) {
@@ -135,9 +140,9 @@ async function main() {
     action: 'redeem',
     actionDescription: 'converts a specified quantity of cTokens into the underlying asset',
     payloadDescription: {
-      recipientWalletAddress: {
+      chain: {
         type: 'string',
-        description: 'Recipient wallet address',
+        description: 'The chain name, only support ethereum for now.',
         required: true,
       },
       amount: {
@@ -147,22 +152,24 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The address of underlying',
+        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for ETH.',
         required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let asset = await getAssetAddress(payload.asset);
-      const result = await api.createTransaction('compound/action', ctx, {
-        recipient: payload.recipientWalletAddress,
-        amount: payload.amount.toString(),
-        asset: asset,
+      if (payload.asset) {
+        payload.asset = await getTokenAddress(payload.asset, payload.chain);
+      }
+      const result = await api.createTransaction('compound/v2', ctx, {
         action: 'redeem',
+        chain: payload.chain,
+        amount: payload.amount.toString(),
+        asset: payload.asset,
       });
       return ctx.result(result);
     } catch (error) {
-      return ctx.result({ error: `Failed to repay: ${error}` });
+      return ctx.result({ error: `Failed to redeem: ${error}` });
     }
   });
 
