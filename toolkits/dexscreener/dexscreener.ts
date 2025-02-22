@@ -47,9 +47,6 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
   }
 
   let query = symbol;
-  if (chain) {
-    query += ` ${chain}`;
-  }
   const result = await api.searchToken(query);
 
   if (!result.pairs || result.pairs.length === 0) {
@@ -67,7 +64,7 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
   pairs = pairs.sort((a: any, b: any) => getLiquidity(b) - getLiquidity(a));
 
   if (pairs.length === 0) {
-    return { error: 'Token not found' };
+    return { error: 'Token not found. Maybe try another service like coingecko to get the token address.' };
   }
 
   return {
