@@ -47,13 +47,23 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
   }
 
   let query = symbol;
+  let pairs = [];
   const result = await api.searchToken(query);
+  if (result.pairs && result.pairs.length > 0) {
+    pairs = result.pairs;
+  }
+  if (chain) {
+    const result = await api.searchToken(`${query} ${chain}`);
+    if (result.pairs && result.pairs.length > 0) {
+      pairs = pairs.concat(result.pairs);
+    }
+  }
 
-  if (!result.pairs || result.pairs.length === 0) {
+  if (pairs.length === 0) {
     return { error: 'Token not found' };
   }
 
-  let pairs = result.pairs.filter(
+  pairs = pairs.filter(
     (pair: any) => pair.baseToken.symbol.toLowerCase() === symbol.toLowerCase() || pair.quoteToken.symbol.toLowerCase() === symbol.toLowerCase(),
   );
 
