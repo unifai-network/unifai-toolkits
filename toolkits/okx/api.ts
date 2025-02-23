@@ -66,4 +66,17 @@ export class OkxAPI extends API {
     const walletAddressList = chainIds.map(chainId => ({ chainId, walletAddress }));
     return await this.request('POST', `/api/v5/defi/user/asset/platform/list`, { json: { walletAddressList } });
   }
+
+  public async defiPositionDetail(chains: string, walletAddress: string, analysisPlatformId: string) {
+    const chainIds = chains.split(',');
+    const walletAddressList = chainIds.map(chainId => ({ chainId, walletAddress }));
+    return await this.request('POST', `/api/v5/defi/user/asset/platform/detail`, {
+      json: {
+        analysisPlatformId,
+        accountIdInfoList: [
+          { walletAddressList },
+        ],
+      },
+    });
+  }
 }
