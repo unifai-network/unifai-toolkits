@@ -22,5 +22,8 @@ dist/
 coverage/
 .DS_Store
 
+# Rust
+target/
+
 local/
 *.log
