@@ -66,6 +66,20 @@ async function main() {
         }
       }
       const defiPositions = await api.allDefiPositions(chains, payload.address);
+      let isFirstCall = true;
+      for (const wipl of defiPositions?.data?.walletIdPlatformList || []) {
+        for (const platform of wipl.platformList || []) {
+          const chainId = platform?.networkBalanceVoList?.[0]?.chainId?.toString();
+          if (chainId && platform.analysisPlatformId) {
+            if (!isFirstCall) {
+              await new Promise(resolve => setTimeout(resolve, 1100));
+            }
+            isFirstCall = false;
+            const defiPositionDetail = await api.defiPositionDetail(chainId, payload.address, platform.analysisPlatformId);
+            platform.details = defiPositionDetail?.data?.walletIdPlatformDetailList;
+          }
+        }
+      }
       return ctx.result({
         tokenAssets: tokenBalances?.data,
         defiAssets: defiPositions?.data?.walletIdPlatformList,
