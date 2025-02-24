@@ -4,6 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { createProgram } from "@mercurial-finance/dynamic-amm-sdk/dist/cjs/src/amm/utils";
 import AmmImpl from "@mercurial-finance/dynamic-amm-sdk";
+import { toUiAmount } from "../utils";
 
 toolkit.action(
   {
@@ -33,17 +34,14 @@ toolkit.action(
             poolAddress: amm.address.toString(),
             baseMint: amm.tokenAMint.address.toString(),
             quoteMint: amm.tokenBMint.address.toString(),
-            baseDecimals: amm.tokenAMint.decimals.toString(),
-            quoteDecimals: amm.tokenBMint.decimals.toString(),
             baseReserve: amm.vaultA.vaultPda.toString(),
             quoteReserve: amm.vaultB.vaultPda.toString(),
-            baseAmount: amm.poolInfo.tokenAAmount.toString(),
-            quoteAmount: amm.poolInfo.tokenBAmount.toString(),
+            baseAmount: toUiAmount(amm.poolInfo.tokenAAmount, amm.tokenAMint.decimals),
+            quoteAmount: toUiAmount(amm.poolInfo.tokenBAmount, amm.tokenBMint.decimals),
             virtualPrice: amm.poolInfo.virtualPrice,
             lpMint: amm.poolState.lpMint.toString(),
-            lpDecimals: amm.decimals,
-            lpSupply: amm.poolState.lpSupply.toString(),
-            totalLockedLp: amm.poolState.totalLockedLp.toString(),
+            lpSupply: toUiAmount(amm.poolState.lpSupply, amm.decimals),
+            totalLockedLp: toUiAmount(amm.poolState.totalLockedLp, amm.decimals),
             feeBps: amm.feeBps.toString(),
           }
         }
