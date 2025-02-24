@@ -5,7 +5,7 @@ import { MeteoraDynamicAPI } from "./api";
 toolkit.action(
   {
     action: "searchDynamicPools",
-    actionDescription: "Search for launched Meteora Dynamic AMM pools using query parameters. Returns liquidity pools with details, including pool address, base token mint (mint A), quote token mint (mint B), LP mint, volume and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
+    actionDescription: "Search for launched Meteora Dynamic AMM pools (NOT DLMM pools) using query parameters. Returns liquidity pools with details, including pool address, base token mint (mint A), quote token mint (mint B), LP mint, volume and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
     payloadDescription: {
       "page": {
         "type": "number",
