@@ -5,7 +5,7 @@ import { MeteoraDlmmAPI } from "./api";
 toolkit.action(
   {
     action: "searchDlmmPools",
-    actionDescription: "Search for launched Meteora DLMM pools using query parameters. Returns liquidity pool (LB) pairs with details grouped by token pairs, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
+    actionDescription: "Search for launched Meteora DLMM pools (NOT dynamic pools) using query parameters. Returns liquidity pool (LB) pairs with details grouped by token pairs, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
     payloadDescription: {
       "page": {
         "type": "number",
