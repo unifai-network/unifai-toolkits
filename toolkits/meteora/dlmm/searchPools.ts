@@ -5,7 +5,7 @@ import { MeteoraDlmmAPI } from "./api";
 toolkit.action(
   {
     action: "searchDlmmPools",
-    actionDescription: "Search for launched Meteora DLMM pools using query parameters. Returns liquidity pool (LB) pairs with details grouped by token pairs, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. You should use mints or pairs filters if you want to search pools with specific tokens.",
+    actionDescription: "Search for launched Meteora DLMM pools using query parameters. Returns liquidity pool (LB) pairs with details grouped by token pairs, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
     payloadDescription: {
       "page": {
         "type": "number",
@@ -17,17 +17,19 @@ toolkit.action(
         "required": true,
         "description": "The maximum number of results per page. Example: 10."
       },
-      "skip_size": {
-        "type": "number",
-        "required": false,
-        "default": 0,
-        "description": "The number of results to skip before starting to return data."
-      },
-      "include_token_mints": {
+      "sort_key": {
         "type": "string",
         "required": false,
-        "default": null,
-        "description": "Filter results to only include pools containing the specified token mint."
+        "description": "The key used to sort the results. Options include 'tvl' (total value locked), 'volume' (trading volume), and 'feetvlratio' (fee-to-TVL ratio).",
+        "enums": ["tvl", "volume", "feetvlratio"],
+        "default": "volume"
+      },
+      "order_by": {
+        "type": "string",
+        "required": false,
+        "description": "The sorting order of the results. Use 'asc' for ascending order or 'desc' for descending order.",
+        "enums": ["asc", "desc"],
+        "default": "desc"
       },
       "include_pool_token_pairs": {
         "type": "array",
@@ -37,6 +39,12 @@ toolkit.action(
         "required": false,
         "default": [],
         "description": "Filter results to only include specific pool token pairs. Provide an array of token pair mint addresses in the format: '<TOKEN_MINT_1>-<TOKEN_MINT_2>'. Example: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v-So11111111111111111111111111111111111111112'."
+      },
+      "include_token_mints": {
+        "type": "string",
+        "required": false,
+        "default": null,
+        "description": "Filter results to only include pools containing the specified token mint. Since SOL and USDC pools are the most common, if other tokens are available in the search conditions, prioritize using them instead."
       },
       "hide_low_tvl": {
         "type": "number",

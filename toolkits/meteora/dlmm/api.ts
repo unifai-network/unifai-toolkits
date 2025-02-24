@@ -14,13 +14,14 @@ export class MeteoraDlmmAPI extends API {
   public async searchPools(params: {
     page?: number;
     limit?: number;
-    skip_size?: number;
-    include_token_mints?: string | string[];
+    sort_key?: 'tvl' | 'volume' | 'feetvlratio';
+    order_by?: 'asc' | 'desc';
     include_pool_token_pairs?: string | string[];
+    include_token_mints?: string | string[];
     hide_low_tvl?: number;
     hide_low_apr?: boolean;
   }) {
-    return await this.request('GET', '/pair/all_by_groups', { params, timeout: TIMEOUT })
+    return await this.request('GET', '/pair/all_with_pagination', { params, timeout: TIMEOUT })
   }
 
   public async getPosition(position: string) {
