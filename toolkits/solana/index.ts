@@ -40,14 +40,14 @@ async function main() {
       },
       tokenAddress: {
         type: 'string', 
-        description: 'Token address or contract address or symbol or ticker',
+        description: 'Token address or contract address or symbol or ticker. If not provided, the balance of SOL will be returned.',
         required: false,
       },
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       const walletAddress = new PublicKey(payload.walletAddress);
-      if (!payload.tokenAddress) {
+      if (!payload.tokenAddress || payload.tokenAddress.toLowerCase() === 'sol') {
         const balance = await connection.getBalance(walletAddress);
         return ctx.result(`Balance of SOL: ${balance / LAMPORTS_PER_SOL}`);
       }
