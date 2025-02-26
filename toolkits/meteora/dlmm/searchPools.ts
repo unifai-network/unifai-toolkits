@@ -5,7 +5,7 @@ import { MeteoraDlmmAPI } from "./api";
 toolkit.action(
   {
     action: "searchDlmmPools",
-    actionDescription: "Search for launched Meteora DLMM pools (NOT dynamic pools) using query parameters. Returns liquidity pool (LB) pairs with details grouped by token pairs, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. You should use include_pool_token_pairs or include_token_mints if you want to search pools with specific tokens.",
+    actionDescription: "Search for launched Meteora DLMM pools (NOT Dynamic AMM pools) based on various query parameters. The results include liquidity pool (LB) pairs with detailed information grouped by token pairs, such as base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees. To filter pools by specific tokens, use 'include_pool_token_pairs' or 'include_token_mints'.",
     payloadDescription: {
       "page": {
         "type": "number",
@@ -50,7 +50,7 @@ toolkit.action(
         "type": "number",
         "required": false,
         "default": null,
-        "description": "Exclude pools with a total value locked (TVL) below the specified threshold. If omitted, no filtering is applied."
+        "description": "Exclude pools with a total value locked (TVL) below the specified threshold. If omitted, no filtering is applied. When 'sort_key' is set to 'feetvlratio', you should set 'hide_low_tvl' to a reasonable value (e.g., 100,000) to avoid including pools with zero TVL, which could distort the ranking."
       },
       "hide_low_apr": {
         "type": "boolean",

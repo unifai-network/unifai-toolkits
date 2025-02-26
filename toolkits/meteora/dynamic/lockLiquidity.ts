@@ -3,8 +3,8 @@ import { txApi, toolkit } from "../config";
 
 toolkit.action(
   {
-    action: "lockDynamicPoolLiquidity",
-    actionDescription: "Locks a specified amount of LP tokens in a Meteora Dynamic AMM pool.",
+    action: "lockDynamicAmmPoolLiquidity",
+    actionDescription: "Locks a specified amount of LP tokens in a Meteora Dynamic AMM liquidity pool (NOT DLMM pool).",
     payloadDescription: {
       "poolAddress": {
         "type": "string",

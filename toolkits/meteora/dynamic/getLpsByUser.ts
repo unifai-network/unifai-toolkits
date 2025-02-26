@@ -8,8 +8,8 @@ import { toUiAmount } from "../utils";
 
 toolkit.action(
   {
-    action: "getDynamicPoolLpsByUser",
-    actionDescription: "Retrieve all Dynamic liquidity pool (LP) tokens associated with a specific user in Meteora. Returns LP token balances along with the corresponding pool details, such as pool addresses, token pairs, fees, LP supply, total locked LP, and other relevant pool data.",
+    action: "getDynamicAmmPoolLpsByUser",
+    actionDescription: "Retrieve all Dynamic AMM liquidity pool (NOT DLMM pool) LP tokens associated with a specific user in Meteora. Returns LP token balances along with the corresponding pool details, such as pool addresses, token pairs, fees, LP supply, total locked LP, and other relevant pool data.",
     payloadDescription: {
       "userPublicKey": {
         "type": "string",

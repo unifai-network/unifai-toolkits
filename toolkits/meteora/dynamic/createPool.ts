@@ -3,8 +3,8 @@ import { txApi, toolkit } from "../config";
 
 toolkit.action(
   {
-    action: "createDynamicPool",
-    actionDescription: "Create a new Meteora Dynamic AMM Pool.",
+    action: "createDynamicAmmPool",
+    actionDescription: "Create a new Meteora Dynamic AMM liquidity pool (NOT DLMM pool).",
     payloadDescription: {
       "baseMint": {
         "type": "string",

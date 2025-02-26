@@ -3,8 +3,8 @@ import { txApi, toolkit } from "../config";
 
 toolkit.action(
   {
-    action: "addDynamicPoolLiquidity",
-    actionDescription: "Deposits base (A) and quote (B) tokens into a Meteora Dynamic AMM pool to provide liquidity and receive LP tokens in return.",
+    action: "addDynamicAmmPoolLiquidity",
+    actionDescription: "Deposits base (A) and quote (B) tokens into a Meteora Dynamic AMM liquidity pool (NOT DLMM pool) to provide liquidity and receive LP tokens in return.",
     payloadDescription: {
       "poolAddress": {
         "type": "string",

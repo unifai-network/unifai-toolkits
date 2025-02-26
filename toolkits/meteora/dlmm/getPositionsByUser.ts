@@ -8,7 +8,7 @@ import BN = require("bn.js");
 toolkit.action(
   {
     action: "getDlmmPoolPositionsByUser",
-    actionDescription: "Retrieve all DLMM liquidity pool positions associated with a specific user in Meteora. Returns position public keys and their details such as pool addresses (LB pairs), fees, rewards, and other relevant position data.",
+    actionDescription: "Retrieve all DLMM liquidity pool (NOT Dynamic AMM pool) positions associated with a specific user in Meteora. Returns position public keys and their details such as pool addresses (LB pairs), fees, rewards, and other relevant position data.",
     payloadDescription: {
       "userPublicKey": {
         "type": "string",

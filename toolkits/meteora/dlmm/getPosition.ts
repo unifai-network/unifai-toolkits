@@ -5,7 +5,7 @@ import { MeteoraDlmmAPI } from "./api";
 toolkit.action(
   {
     action: "getDlmmPoolPosition",
-    actionDescription: "Retrieve details about a specific position in a Meteora DLMM liquidity pool. Includes information such as the owner address, pool address (LB pair), fees, and rewards.",
+    actionDescription: "Retrieve details about a specific position in a Meteora DLMM liquidity pool (NOT Dynamic AMM pool). Includes information such as the owner address, pool address (LB pair), fees, and rewards.",
     payloadDescription: {
       "position": {
         "type": "string",

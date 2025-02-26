@@ -4,7 +4,7 @@ import { txApi, toolkit } from "../config";
 toolkit.action(
   {
     action: "removeDlmmPoolLiquidity",
-    actionDescription: "Remove liquidity from a Meteora DLMM liquidity pool by specifying the amount to remove, along with the price range and other settings.",
+    actionDescription: "Remove liquidity from a Meteora DLMM liquidity pool (NOT Dynamic AMM pool) by specifying the amount to remove, along with the price range and other settings.",
     payloadDescription: {
       "lbPair": {
         "type": "string",
