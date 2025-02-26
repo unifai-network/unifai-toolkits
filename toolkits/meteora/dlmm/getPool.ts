@@ -5,7 +5,7 @@ import { MeteoraDlmmAPI } from "./api";
 toolkit.action(
   {
     action: "getDlmmPool",
-    actionDescription: "Retrieve detailed information about a Meteora DLMM liquidity pool, including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees.",
+    actionDescription: "Retrieve detailed information about a Meteora DLMM liquidity pool (NOT Dynamic AMM pool), including base token mint (mint x), quote token mint (mint y), reserves, bin step, current price, trading volume, and fees.",
     payloadDescription: {
       "lbPair": {
         "type": "string",

@@ -6,8 +6,8 @@ import { toUiAmount } from "../utils";
 
 toolkit.action(
   {
-    action: "getDynamicPool",
-    actionDescription: "Retrieves detailed information about a Meteora Dynamic AMM liquidity pool, including base token mint (mint A), quote token mint (mint B), reserves, LP supply, fees, and virtual price.",
+    action: "getDynamicAmmPool",
+    actionDescription: "Retrieves detailed information about a Meteora Dynamic AMM liquidity pool (NOT DLMM pool), including base token mint (mint A), quote token mint (mint B), reserves, LP supply, fees, and virtual price.",
     payloadDescription: {
       "poolAddress": {
         "type": "string",

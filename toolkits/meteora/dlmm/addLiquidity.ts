@@ -4,7 +4,7 @@ import { txApi, toolkit } from "../config";
 toolkit.action(
   {
     action: "addDlmmPoolLiquidity",
-    actionDescription: "Add liquidity to a Meteora DLMM liquidity pool by specifying base (x) and quote (y) token amounts, along with a chosen strategy and price range settings. Before adding liquidity, retrieve the DLMM pool details to design an appropriate strategy and set price bounds.",
+    actionDescription: "Add liquidity to a Meteora DLMM liquidity pool (NOT Dynamic AMM pool) by specifying base (x) and quote (y) token amounts, along with a chosen strategy and price range settings. Before adding liquidity, retrieve the DLMM pool details to design an appropriate strategy and set price bounds.",
     payloadDescription: {
       "lbPair": {
         "type": "string",

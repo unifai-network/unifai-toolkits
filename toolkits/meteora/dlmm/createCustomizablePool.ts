@@ -4,7 +4,7 @@ import { txApi, toolkit } from "../config";
 toolkit.action(
   {
     action: "createCustomizableDlmmPool",
-    actionDescription: "Create a new Meteora DLMM (Dynamic Liquidity Market Maker) Pool with customizable parameters.",
+    actionDescription: "Create a new Meteora DLMM liquidity pool (NOT Dynamic AMM pool) with customizable parameters.",
     payloadDescription: {
       "baseMint": {
         "type": "string",

@@ -3,8 +3,8 @@ import { txApi, toolkit } from "../config";
 
 toolkit.action(
   {
-    action: "removeDynamicPoolLiquidity",
-    actionDescription: "Removes liquidity from a Meteora Dynamic AMM pool by withdrawing base (A) and quote (B) tokens in exchange for LP tokens.",
+    action: "removeDynamicAmmPoolLiquidity",
+    actionDescription: "Removes liquidity from a Meteora Dynamic AMM liquidity pool (NOT DLMM pool) by withdrawing base (A) and quote (B) tokens in exchange for LP tokens.",
     payloadDescription: {
       "poolAddress": {
         "type": "string",
