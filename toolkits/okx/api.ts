@@ -6,12 +6,15 @@ export class OkxAPI extends API {
   private okxApiKey: string;
   private okxSecretKey: string;
   private okxPassphrase: string;
+  private lastRequestTime: number = 0;
+  private rateLimitMs: number;
 
-  constructor(apiKey: string, secretKey: string, passphrase: string) {
+  constructor(apiKey: string, secretKey: string, passphrase: string, rateLimitMs: number = 1000) {
     super({ endpoint: 'https://www.okx.com' });
     this.okxApiKey = apiKey;
     this.okxSecretKey = secretKey;
     this.okxPassphrase = passphrase;
+    this.rateLimitMs = rateLimitMs;
   }
 
   private preHash(timestamp: string, method: string, request_path: string, params: Record<string, any>, body: any) {
@@ -42,7 +45,23 @@ export class OkxAPI extends API {
     return { signature, timestamp };
   }
 
+  private async enforceRateLimit() {
+    const now = Date.now();
+    const timeElapsed = now - this.lastRequestTime;
+    
+    if (this.rateLimitMs) {
+      const delayMs = this.rateLimitMs - timeElapsed;
+      if (delayMs > 0) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+    
+    this.lastRequestTime = Date.now();
+  }
+
   public async request(method: string, path: string, options: any) {
+    await this.enforceRateLimit();
+    
     const { signature, timestamp } = this.createSignature(method, path, options.params, options.json, this.okxSecretKey);
     return await super.request(method, path, {
       headers: {
