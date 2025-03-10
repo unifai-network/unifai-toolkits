@@ -19,7 +19,7 @@ async function main() {
 
   toolkit.action({
     action: 'getTokenAddressBySymbol',
-    actionDescription: 'Get token address on multiple chains (a.k.a. contract address) by symbol (a.k.a. ticker). If you are unsure about the chain, try getTokenAddressBySymbol provided by DexScreener first, which can return the token with biggest pool size.',
+    actionDescription: 'Get token address on multiple chains (a.k.a. contract address) by symbol (a.k.a. ticker).',
     payloadDescription: {
       symbol: {
         type: 'string',
