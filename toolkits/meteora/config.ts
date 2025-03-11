@@ -6,6 +6,6 @@ dotenv.config();
 
 export const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
 
-export const txApi = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
+export const txApi = new TransactionAPI({ endpoint: process.env.TRANSACTION_API_ENDPOINT, apiKey: process.env.TOOLKIT_API_KEY });
 
 export const connection = new Connection(process.env.SOLANA_RPC_URL || clusterApiUrl('mainnet-beta'), 'confirmed');
