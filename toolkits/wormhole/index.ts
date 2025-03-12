@@ -50,13 +50,7 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('wormhole/bridge', ctx, {
-        transfer: {
-          amount: new BN(payload.amount),
-          from: payload.from,
-          to: payload.to,
-        }
-      });
+      const result = await api.createTransaction('wormhole/bridge', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
