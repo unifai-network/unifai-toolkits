@@ -4,8 +4,6 @@ dotenv.config();
 import { PublicKey } from '@solana/web3.js';
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
 import { wormhole } from "@wormhole-foundation/sdk";
-import BN from 'bn.js';
-
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
