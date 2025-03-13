@@ -4,8 +4,6 @@ dotenv.config();
 import { PublicKey } from '@solana/web3.js';
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
 import { wormhole } from "@wormhole-foundation/sdk";
-import BN from 'bn.js';
-
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
@@ -50,13 +48,7 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('wormhole/bridge', ctx, {
-        transfer: {
-          amount: new BN(payload.amount),
-          from: payload.from,
-          to: payload.to,
-        }
-      });
+      const result = await api.createTransaction('wormhole/bridge', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
