@@ -30,8 +30,8 @@ async function main() {
         description: 'Source chain and address information for USDC transfer',
         required: true,
         properties: {
-          chain: { type: 'string', description: 'Source chain name (supports ethereum and base)' },
-          address: { type: 'string', description: 'Source address holding USDC (ethereum or base address)' }
+          chain: { type: 'string', description: 'Source chain name (supports ethereum)' },
+          address: { type: 'string', description: 'Source address holding USDC (ethereum address)' }
         }
       },
       to: {
@@ -41,6 +41,15 @@ async function main() {
         properties: {
           chain: { type: 'string', description: 'Destination chain name (only supports solana)' },
           address: { type: 'string', description: 'Destination solana address to receive USDC' }
+        }
+      },
+      token: {
+        type: 'object',
+        description: 'USDC of the source chain, including chain and address information',
+        required: true,
+        properties: {
+          chain: { type: 'string', description: 'Source chain where USDC is located (supports ethereum)' },
+          address: { type: 'string', description: 'Contract address of USDC on the source chain (Ethereum USDC contract address)' }
         }
       }
     }
