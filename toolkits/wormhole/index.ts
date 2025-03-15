@@ -43,15 +43,6 @@ async function main() {
           address: { type: 'string', description: 'Destination solana address to receive USDC' }
         }
       },
-      token: {
-        type: 'object',
-        description: 'USDC of the source chain, including chain and address information',
-        required: true,
-        properties: {
-          chain: { type: 'string', description: 'Source chain where USDC is located (supports ethereum)' },
-          address: { type: 'string', description: 'Contract address of USDC on the source chain (Ethereum USDC contract address)' }
-        }
-      }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
