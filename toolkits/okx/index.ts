@@ -37,7 +37,7 @@ async function main() {
 
   toolkit.action({
     action: 'getTokenAndDefiAssets',
-    actionDescription: 'Get all token balances and defi positions of a wallet address, supports multiple chains and networks',
+    actionDescription: `Get all token balances and defi positions of a wallet address. Supported chains: ${Object.keys(ChainNameToId).join(', ')}`,
     payloadDescription: {
       chains: {
         type: 'string',
