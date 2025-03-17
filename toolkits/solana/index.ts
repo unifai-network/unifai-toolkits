@@ -74,6 +74,35 @@ async function main() {
   });
 
   toolkit.action({
+    action: 'transfer',
+    actionDescription: 'Transfer SOL or an SPL token from one Solana wallet address to another',
+    payloadDescription: {
+      toWalletAddress: {
+        type: 'string',
+        description: 'Solana wallet address to transfer to',
+        required: true,
+      },
+      amount: {
+        type: 'number', 
+        description: 'Amount of SOL or tokens to transfer',
+        required: true,
+      },
+      tokenAddress: {
+        type: 'string', 
+        description: 'Token address or contract address or symbol or ticker to transfer. If not provided, the transfer will be SOL.',
+        required: false,
+      },
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      const result = await api.createTransaction('solana/transfer', ctx, payload);
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to create transaction: ${error}` });
+    }
+  });
+
+  toolkit.action({
     action: 'createSplToken',
     actionDescription: 'Create an SPL token on Solana',
     payloadDescription: {
