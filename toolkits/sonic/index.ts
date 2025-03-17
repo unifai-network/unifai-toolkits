@@ -95,7 +95,7 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('sonic/spl-create', ctx, payload);
+      const result = await api.createTransaction('sonic/transfer', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
