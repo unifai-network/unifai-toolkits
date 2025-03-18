@@ -9,7 +9,7 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Pump.fun',
+    name: 'PumpFun',
     description: "Pump.fun allows you to launch your own meme token (memecoin) on Solana",
   });
 
@@ -18,7 +18,7 @@ async function main() {
   });
 
   toolkit.action({
-    action: 'launch token',
+    action: 'launchToken',
     actionDescription: 'Launch a new token on Pump.fun',
     payloadDescription: {
       tokenName: {

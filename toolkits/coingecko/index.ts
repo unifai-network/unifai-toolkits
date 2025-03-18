@@ -19,7 +19,7 @@ async function main() {
 
   toolkit.action({
     action: 'getTokenAddressBySymbol',
-    actionDescription: 'Get token address (a.k.a. contract address) by symbol (a.k.a. ticker)',
+    actionDescription: 'Get token address on multiple chains (a.k.a. contract address) by symbol (a.k.a. ticker).',
     payloadDescription: {
       symbol: {
         type: 'string',

@@ -1,6 +1,6 @@
-import { getTokenAddressBySymbol as getTokenAddress1 } from '../../dexscreener/dexscreener';
-import { getTokenAddressBySymbol as getTokenAddress2 } from '../../coingecko/coingecko';
+import { getTokenAddressBySymbol as getTokenDexScreener } from '../../dexscreener/dexscreener';
+import { getTokenAddressBySymbol as getTokenCoingecko } from '../../coingecko/coingecko';
 
 export async function getTokenAddressBySymbol(token: string, chain?: string) : Promise<string | null> {
-  return await getTokenAddress1(token, chain) || await getTokenAddress2(token, chain) || null;
+  return await getTokenCoingecko(token, chain) || await getTokenDexScreener(token, chain) || null;
 }

@@ -21,7 +21,7 @@ import "./dynamic/searchPools";
 async function main() {
   await toolkit.updateToolkit({
     name: "Meteora",
-    description: "Unifai official Meteora tools",
+    description: "Meteora is a decentralized liquidity protocol on Solana offering advanced market-making solutions for efficient token trading.",
   });
 
   toolkit.event("ready", () => {

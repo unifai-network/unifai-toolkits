@@ -5,13 +5,13 @@ import { PublicKey, Connection, clusterApiUrl, LAMPORTS_PER_SOL, ParsedAccountDa
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
 import { getTokenAddressBySymbol } from '../common/tokenaddress';
 
-const connection = new Connection(process.env.SOLANA_RPC_URL || clusterApiUrl('mainnet-beta'), 'confirmed');
+const connection = new Connection(process.env.SONIC_RPC_URL);
 
-async function getSolanaTokenAddress(token: string) : Promise<string> {
+async function getSonicTokenAddress(token: string) : Promise<string> {
   try {
     new PublicKey(token);
   } catch (error) {
-    return await getTokenAddressBySymbol(token, 'solana') || token;
+    return await getTokenAddressBySymbol(token, 'sonic') || token;
   }
   return token;
 }
@@ -21,8 +21,8 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Solana',
-    description: "Get account information on Solana blockchain",
+    name: 'Sonic',
+    description: "Get account information on Sonic blockchain",
   });
 
   toolkit.event('ready', () => {
@@ -31,11 +31,11 @@ async function main() {
 
   toolkit.action({
     action: 'getBalance',
-    actionDescription: 'Get the balance of SOL or an SPL token of a Solana wallet address',
+    actionDescription: 'Get the balance of SOL or an SPL token of a Sonic wallet address',
     payloadDescription: {
       walletAddress: {
         type: 'string',
-        description: 'Solana wallet address',
+        description: 'Sonic wallet address',
         required: true,
       },
       tokenAddress: {
@@ -52,7 +52,7 @@ async function main() {
         return ctx.result(`Balance of SOL: ${balance / LAMPORTS_PER_SOL}`);
       }
 
-      const tokenAddress = await getSolanaTokenAddress(payload.tokenAddress);
+      const tokenAddress = await getSonicTokenAddress(payload.tokenAddress);
 
       const tokenAccounts = await connection.getTokenAccountsByOwner(
         walletAddress,
@@ -75,11 +75,11 @@ async function main() {
 
   toolkit.action({
     action: 'transfer',
-    actionDescription: 'Transfer SOL or an SPL token from one Solana wallet address to another',
+    actionDescription: 'Transfer SOL or an SPL token from one Sonic wallet address to another',
     payloadDescription: {
       toWalletAddress: {
         type: 'string',
-        description: 'Solana wallet address to transfer to',
+        description: 'Sonic wallet address to transfer to',
         required: true,
       },
       amount: {
@@ -95,7 +95,7 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('solana/transfer', ctx, payload);
+      const result = await api.createTransaction('sonic/transfer', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
@@ -104,7 +104,7 @@ async function main() {
 
   toolkit.action({
     action: 'createSplToken',
-    actionDescription: 'Create an SPL token on Solana',
+    actionDescription: 'Create an SPL token on Sonic',
     payloadDescription: {
       decimals: {
         type: 'number',
@@ -119,7 +119,7 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('solana/spl-create', ctx, payload);
+      const result = await api.createTransaction('sonic/spl-create', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });

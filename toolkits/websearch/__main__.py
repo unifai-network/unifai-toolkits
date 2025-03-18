@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     toolkit = unifai.Toolkit(api_key=os.getenv("TOOLKIT_API_KEY"))
 
-    asyncio.run(toolkit.update_toolkit(name="Tavily Web Search", description="Search the web for information"))
+    asyncio.run(toolkit.update_toolkit(name="TavilyWebSearch", description="Search the web for information"))
 
     @toolkit.event
     async def on_ready():

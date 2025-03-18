@@ -26,11 +26,6 @@ toolkit.action(
         "description": "The amount of the quote token (token y) to be deposited into the liquidity pool.",
         "required": true
       },
-      "slippage": {
-        "type": "number",
-        "description": "The maximum allowed slippage percentage (e.g., 1 for 1%) when adding liquidity. Determines how much change to the pool price you're willing to accept and still add liquidity.",
-        "required": false
-      },
       "strategyType": {
         "type": "number",
         "description": "Defines the type of liquidity provision strategy used. Different strategies impact how liquidity is distributed across price ranges.",
@@ -50,15 +45,20 @@ toolkit.action(
           }
         ],
       },
+      "slippage": {
+        "type": "number",
+        "description": "The maximum allowed slippage percentage (e.g., 1 for 1%) when adding liquidity. Determines how much change to the pool price you're willing to accept and still add liquidity.",
+        "required": false
+      },
       "minPrice": {
         "type": "number",
-        "description": "The minimum price at which liquidity will be provided in the pool. This price represents the lower bound of the active price range for the liquidity pool.",
-        "required": true
+        "description": "Minimum price for liquidity provision. For binStep=N, the range with maxPrice must not exceed 69 bins (~69*N/10000 %). Formula: bin count = Math.ceil(Math.log(maxPrice/minPrice)/(binStep/10000)). If omitted, the price range will be set around the current price.",
+        "required": false
       },
       "maxPrice": {
         "type": "number",
-        "description": "The maximum price at which liquidity will be provided in the pool. This price represents the upper bound of the active price range for the liquidity pool.",
-        "required": true
+        "description": "Maximum price for liquidity provision. Range with minPrice must not exceed 69 bins (~69*N/10000 % where N is binStep). Formula: bin count = Math.ceil(Math.log(maxPrice/minPrice)/(binStep/10000)). If omitted, the price range will be set around the current price.",
+        "required": false
       }
     },
   },
