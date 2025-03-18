@@ -3,33 +3,28 @@ import { Chain, InvestOrderType } from "../api/enums";
 import { okxApi, toolkit } from "../config";
 
 toolkit.action({
-  action: "estimateDefiInvestmentSubscription",
-  actionDescription: "Calculate subscription earnings details for a specific Defi investment, including super node name, estimated gas fees, received tokens, voucher token details, earnings token details, token authorization status, subscribable amount, minimum subscription amount, maximum subscription amount, and currency exchange rates.",
+  action: "estimateInvestmentSubscription",
+  actionDescription: "Calculate subscription earnings details for a specific OKX Defi investment, including super node name, estimated gas fees, received tokens, voucher token details, earnings token details, token authorization status, subscribable amount, minimum subscription amount, maximum subscription amount, and currency exchange rates.",
   payloadDescription: {
     "address": {
       "type": "string",
       "required": false,
-      "description": "User's wallet address."
+      "description": "User's wallet address, supporting EVM address and Solana address."
+    },
+    "investmentId": {
+      "type": "string",
+      "required": true,
+      "description": "OKX DeFi investmentId, typically obtained from the searchInvestments or getInvestmentDetails action/service."
+    },
+    "inputTokenAddress": {
+      "type": "string",
+      "required": true,
+      "description": "Smart contract address of the subscription token."
     },
     "inputAmount": {
       "type": "string",
       "required": true,
       "description": "Quantity of tokens to subscribe."
-    },
-    "investmentId": {
-      "type": "string",
-      "required": true,
-      "description": "Unique identifier for the investment. Refer to the official documentation for available investment IDs."
-    },
-    "investmentCategory": {
-      "type": "string",
-      "required": false,
-      "description": "Category of the investment. Possible values: '0' (Default category), '1' (BRC-20)."
-    },
-    "inputTokenAddress": {
-      "type": "string",
-      "required": true,
-      "description": "Smart contract address of the subscription token. Refer to the official documentation for available token addresses."
     },
     "isSingle": {
       "type": "boolean",
@@ -47,12 +42,16 @@ toolkit.action({
     payload.outputTokenDecimal = "0";
     const data = await okxApi.defi.calculateSubscription(payload);
 
-    data.receiveTokenInfo['chainName'] = Chain[data.receiveTokenInfo.chainId];
+    data.receiveTokenInfo['chain'] = Chain[data.receiveTokenInfo.chainId];
+    delete data.receiveTokenInfo.chainId;
+
     data.investWithTokenList.forEach(invest => {
-      invest['chainName'] = Chain[invest.chainId];
+      invest['chain'] = Chain[invest.chainId];
+      delete invest.chainId;
     });
     data.approveStatusList?.forEach(approve => {
-      approve['chainName'] = Chain[approve.chainId];
+      approve['chain'] = Chain[approve.chainId];
+      delete approve.chainId;
       approve['orderType'] = InvestOrderType[approve.orderType] as any;
     });
 

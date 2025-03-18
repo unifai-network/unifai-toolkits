@@ -3,28 +3,23 @@ import { Chain, InvestOrderType } from "../api/enums";
 import { okxApi, toolkit } from "../config";
 
 toolkit.action({
-  action: "estimateDefiInvestmentRedemption",
-  actionDescription: "Calculate redemption details for a specific Defi investment, including super node name, estimated gas fees, received tokens, token exchange details, token authorization status, redeemable amount, minimum redemption amount, and maximum redemption amount.",
+  action: "estimateInvestmentRedemption",
+  actionDescription: "Calculate redemption details for a specific OKX Defi investment, including super node name, estimated gas fees, received tokens, token exchange details, token authorization status, redeemable amount, minimum redemption amount, and maximum redemption amount.",
   payloadDescription: {
     "address": {
       "type": "string",
       "required": false,
-      "description": "User's wallet address."
+      "description": "User's wallet address, supporting EVM address and Solana address."
+    },
+    "investmentId": {
+      "type": "string",
+      "required": true,
+      "description": "OKX DeFi investmentId which user has previously subscribed to. You can find it from getTokenAndDefiAssets action/service."
     },
     "inputTokenAmount": {
       "type": "string",
       "required": true,
       "description": "Quantity of tokens to redeem."
-    },
-    "investmentId": {
-      "type": "string",
-      "required": true,
-      "description": "Unique identifier for the investment."
-    },
-    "investmentCategory": {
-      "type": "string",
-      "required": false,
-      "description": "Category of the investment. Possible values: '0' (Default category), '1' (BRC-20)."
     },
     "outputTokenAddress": {
       "type": "string",
@@ -48,10 +43,12 @@ toolkit.action({
     const data = await okxApi.defi.calculateRedemption(payload);
 
     data.receiveTokenList.forEach(token => {
-      token['chainName'] = Chain[token.chainId];
+      token['chain'] = Chain[token.chainId];
+      delete token.chainId;
     });
     data.approveStatusList?.forEach(approve => {
-      approve['chainName'] = Chain[approve.chainId];
+      approve['chain'] = Chain[approve.chainId];
+      delete approve.chainId;
       approve['orderType'] = InvestOrderType[approve.orderType] as any;
     });
 
