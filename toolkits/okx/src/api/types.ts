@@ -93,6 +93,12 @@ export type QueryProductDetailResult = {
     tokenAddress: string;
     tokenSymbol: string;
   }[];
+  rateDetails?: {
+    tokenAddress: string;
+    tokenSymbol: string;
+    rate: string;
+    type: InvestRateType;
+  }[];
   isInvestable: boolean;
   utilizationRate: string;
   earnedToken: {
@@ -147,9 +153,11 @@ export type QueryUserPositionListResult = {
 
 export type QueryUserPositionDetailListByPlatformParams = {
   analysisPlatformId: string;
-  walletAddressList: {
-    chainId: string;
-    walletAddress: string;
+  accountIdInfoList: {
+    walletAddressList: {
+      chainId: string;
+      walletAddress: string;
+    }[];
   }[];
 };
 

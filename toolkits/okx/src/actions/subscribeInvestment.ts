@@ -2,18 +2,18 @@ import { ActionContext } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 
 toolkit.action({
-  action: "subscribeDefiInvestment",
-  actionDescription: "Initiate a subscription transaction for a DeFi investment on any platform supported by OKX. It is recommended to first use `estimateDefiInvestmentSubscription` to calculate the necessary details before proceeding with the subscription.",
+  action: "subscribeInvestment",
+  actionDescription: "Initiate a subscription transaction for an OKX DeFi investment obtained from the searchInvestments or getInvestmentDetails action/service. It is recommended to first use `estimateInvestmentSubscription` to calculate the necessary details before proceeding with the subscription.",
   payloadDescription: {
     "address": {
       "type": "string",
       "required": true,
-      "description": "User's wallet address."
+      "description": "User's wallet address, supporting EVM address and Solana address."
     },
     "investmentId": {
       "type": "string",
       "required": true,
-      "description": "Unique identifier of the investment product."
+      "description": "OKX DeFi investmentId, typically obtained from the searchInvestments or getInvestmentDetails action/service."
     },
     "userInputList": {
       "type": "array",
@@ -55,18 +55,6 @@ toolkit.action({
       "required": true,
       "description": "Information about the tokens the user expects to receive upon subscription."
     },
-    "extra": {
-      "type": "object",
-      "required": false,
-      "description": "Additional parameters for specific subscription scenarios.",
-      "properties": {
-        "rewardAddress": {
-          "type": "string",
-          "required": false,
-          "description": "For Stake-type investment products, the user's personal BTC reward wallet address."
-        }
-      }
-    }
   }
 }, async (ctx: ActionContext, payload: any = {}) => {
   try {

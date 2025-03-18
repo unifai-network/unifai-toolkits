@@ -2,18 +2,18 @@ import { ActionContext } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 
 toolkit.action({
-  action: "redeemDefiInvestment",
-  actionDescription: "Initiate a redemption transaction for a DeFi investment on any platform supported by OKX. It is recommended to first use `estimateDefiInvestmentRedemption` to calculate the required details before executing the redemption.",
+  action: "redeemInvestment",
+  actionDescription: "Initiate a redemption transaction for an OKX DeFi investment that the user has previously subscribed to. It is recommended to first use `estimateInvestmentRedemption` to calculate the required details before executing the redemption.",
   payloadDescription: {
     "address": {
       "type": "string",
       "required": true,
-      "description": "User's wallet address."
+      "description": "User's wallet address, supporting EVM address and Solana address."
     },
     "investmentId": {
       "type": "string",
       "required": true,
-      "description": "Unique identifier of the investment product."
+      "description": "OKX DeFi investmentId which user has previously subscribed to. You can find it from getTokenAndDefiAssets action/service."
     },
     "userInputList": {
       "type": "array",
