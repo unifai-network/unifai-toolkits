@@ -1,3 +1,5 @@
+import re
+import html
 import feedparser
 
 def fetch_rss_web3_news(limit_per_feed=5):
@@ -14,13 +16,18 @@ def fetch_rss_web3_news(limit_per_feed=5):
     for url in rss_urls:
         feed = feedparser.parse(url)
         source_title = feed.feed.title if 'title' in feed.feed else 'Unknown Source'
-        for entry in feed.entries[:limit_per_feed]:  # Fetch latest `limit_per_feed` articles from each feed
+        for entry in feed.entries[:limit_per_feed]:
+            summary = entry.summary if 'summary' in entry else ""
+            if summary:
+                summary = re.sub(r'<[^>]+>', '', summary)
+                summary = html.unescape(summary)
+                summary = re.sub(r'\s+', ' ', summary).strip()
             news = {
                 "title": entry.title,
                 "link": entry.link,
-                "published": entry.published if 'published' in entry else "N/A",
+                "published": entry.published if 'published' in entry else "",
                 "source": source_title,
-                "summary": entry.summary if 'summary' in entry else "N/A"
+                "summary": summary
             }
             news_items.append(news)
     
