@@ -1,5 +1,5 @@
 {
-  "name": "base",
+  "name": "bnb",
   "scripts": {
     "start": "ts-node index.ts"
   },

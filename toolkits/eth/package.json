@@ -1,5 +1,5 @@
 {
-  "name": "base",
+  "name": "ethereum",
   "scripts": {
     "start": "ts-node index.ts"
   },
