@@ -9,18 +9,16 @@ async function getBnbTokenAddress(token: string) : Promise<string> {
   if (ethers.isAddress(token.toLowerCase())) {
     return token.toLowerCase();
   }
-  return await getTokenAddressBySymbol(token, 'base') || token;
+  return await getTokenAddressBySymbol(token, 'bsc') || token;
 }
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
-  console.log('Toolkit apiKey :'+process.env.TOOLKIT_API_KEY);
-
   await toolkit.updateToolkit({
     name: 'bnb',
-    description: "Transfer tokens on bnb blockchain",
+    description: "Transfer tokens on BNB (a.k.a. BSC) blockchain",
   });
 
   toolkit.event('ready', () => {
@@ -29,7 +27,7 @@ async function main() {
 
   toolkit.action({
     action: 'transfer',
-    actionDescription: 'Transfer tokens on bnb blockchain',
+    actionDescription: 'Transfer tokens on BNB (a.k.a. BSC) blockchain',
     payloadDescription: {
       recipientWalletAddress: {
         type: 'string',
@@ -43,7 +41,7 @@ async function main() {
       },
       token: {
         type: 'string',
-        description: 'Token address or contract address or symbol or ticker, leave empty to transfer native ETH',
+        description: 'Token address or contract address or symbol or ticker, leave empty to transfer native BNB',
         required: false,
       }
     }

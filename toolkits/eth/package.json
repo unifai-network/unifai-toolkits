@@ -1,5 +1,5 @@
 {
-  "name": "solana",
+  "name": "ethereum",
   "scripts": {
     "start": "ts-node index.ts"
   },
