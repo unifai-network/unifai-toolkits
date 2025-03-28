@@ -9,7 +9,7 @@ async function getEthTokenAddress(token: string) : Promise<string> {
   if (ethers.isAddress(token.toLowerCase())) {
     return token.toLowerCase();
   }
-  return await getTokenAddressBySymbol(token, 'Ethereum') || token;
+  return await getTokenAddressBySymbol(token, 'ethereum') || token;
 }
 
 async function main() {
@@ -18,7 +18,7 @@ async function main() {
 
   await toolkit.updateToolkit({
     name: 'eth',
-    description: "Transfer tokens on eth blockchain",
+    description: "Transfer tokens on Ethereum blockchain",
   });
 
   toolkit.event('ready', () => {
