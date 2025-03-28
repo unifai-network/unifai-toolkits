@@ -17,7 +17,7 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'eth',
+    name: 'Ethereum',
     description: "Transfer tokens on Ethereum blockchain",
   });
 
