@@ -19,7 +19,7 @@ async function main() {
 
   toolkit.action({
     action: 'getTrendingTokens',
-    actionDescription: 'Get tokens mostly discussed on X/Twitter recently',
+    actionDescription: 'Get tokens mostly discussed on X/Twitter recently by selected web3 KOLs',
     payloadDescription: {
       timeWindow: {
         type: 'string',
@@ -51,7 +51,7 @@ async function main() {
 
   toolkit.action({
     action: 'searchMentions',
-    actionDescription: 'Search for mentions of specific keywords on X/Twitter recently',
+    actionDescription: 'Search for mentions of specific keywords on X/Twitter recently by selected web3 KOLs',
     payloadDescription: {
       keywords: {
         type: 'string',
