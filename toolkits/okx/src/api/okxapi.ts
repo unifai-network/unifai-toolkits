@@ -17,23 +17,23 @@ export async function getInvestmentsbywallet(address:string){
 
 export function findBestInvestments(data: Investment[]|null):Investment|null
 {
-  const tvlSorted = [...data].sort((a, b) => {
-    const tvlA = parseFloat(a.tvl);
-    const tvlB = parseFloat(b.tvl);
-    return tvlB - tvlA;
-  });
-  const topEntries = tvlSorted.slice(0, 5);
+    const tvlSorted = [...data].sort((a, b) => {
+        const tvlA = parseFloat(a.tvl);
+        const tvlB = parseFloat(b.tvl);
+        return tvlB - tvlA;
+    });
+    const topEntries = tvlSorted.slice(0, 5);
 
-  let newlist = topEntries.sort((a, b) => {
-    const scoreA = Math.pow(parseFloat(a.tvl), 2) * parseFloat(a.rate);
-    const scoreB = Math.pow(parseFloat(b.tvl), 2) * parseFloat(b.rate);
-    return scoreB - scoreA;
-  });
-  
-  if (newlist.length > 0) {
-    return newlist[0];
-  }
-  return null;
+    let newlist = topEntries.sort((a, b) => {
+        const scoreA = Math.pow(parseFloat(a.tvl), 2) * parseFloat(a.rate);
+        const scoreB = Math.pow(parseFloat(b.tvl), 2) * parseFloat(b.rate);
+        return scoreB - scoreA;
+    });
+    
+    if (newlist.length > 0) {
+        return newlist[0];
+    }
+    return null;
 }
 
 
