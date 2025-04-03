@@ -8,9 +8,9 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: "Orbiter finance",
+    name: "OrbiterFinance",
     description:
-      "Orbiter Finance enables cross-rollup transactions of Ethereum native assets in a trustless and seamless manner. We support various networks, including Ethereum, Mantle, Base, StarkNet, opBNB, Scroll, Arbitrum, Optimism, Polygon, BNB Chain, etc..",
+      "Orbiter Finance provides cross-rollup bridge on EVM compatible chain, e.g. Ethereum, Base, BNB chain (BSC), Polygon, etc.",
   });
 
   toolkit.event("ready", () => {
@@ -19,29 +19,29 @@ async function main() {
 
   toolkit.action(
     {
-      action: "cross-chain-transfer",
-      actionDescription: "Cross-chain transfer tokens",
+      action: "crossChainBridge",
+      actionDescription: "Send tokens from one chain to another",
       payloadDescription: {
-        srcChainId: {
-          type: "number",
+        srcChain: {
+          type: "string",
           description:
-            "Source evm chain id, for example: 1 for ETH, 56 for BSC, 137 for Polygon, 8453 for Base, etc",
+            "Source evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
           required: true,
         },
-        dstChainId: {
-          type: "number",
+        dstChain: {
+          type: "string",
           description:
-            "Destination evm chain id, for example: 1 for ETH, 56 for BSC, 137 for Polygon, 8453 for Base, etc",
+            "Destination evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
           required: true,
         },
         srcTokenSymbol: {
           type: "string",
-          description: "Source token symbol, for example: ETH, USDC, USDT, BNB, BTCB, etc.",
+          description: "Source token symbol, for example: ETH, USDC, USDT, etc.",
           required: true,
         },
         dstTokenSymbol: {
           type: "string",
-          description: "Destination token symbol, for example: ETH, USDC, USDT, BNB, BTCB, etc.",
+          description: "Destination token symbol, for example: ETH, USDC, USDT, etc.",
           required: true,
         },
         amount: {

@@ -1,5 +1,5 @@
 {
-  "name": "bnb",
+  "name": "orbiter",
   "scripts": {
     "start": "ts-node index.ts"
   },
