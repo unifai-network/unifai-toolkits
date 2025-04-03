@@ -1,12 +1,9 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { ethers } from 'ethers';
 import { Toolkit, ActionContext, TransactionAPI } from 'unifai-sdk';
 import { getTokenAddressBySymbol } from '../common/tokenaddress';
-import {searchInvestments, subscribeInvestment, findBestInvestments, getInvestmentsbywallet} from '../okx/src/api/okxapi'
-import {SimplifyInvestType} from '../okx/src/api/enums'
-import {Investment, InvestmentRequest, TokenInfo} from '../okx/src/api/types'
+
 
 async function getTokenAddress(token: string) : Promise<string> {
   return await getTokenAddressBySymbol(token, 'bsc') || token;
@@ -14,11 +11,11 @@ async function getTokenAddress(token: string) : Promise<string> {
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
-  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:"http://127.0.0.1:8001/api" });
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:process.env.FRONTEND_URL });
   
   await toolkit.updateToolkit({
     name: 'Venus',
-    description: "Lend tokens on BNB (a.k.a. BSC) blockchain by Venus Protocol",
+    description: "Supply or borrow tokens on BNB (a.k.a. BSC) blockchain using Venus Protocol",
   });
 
   toolkit.event('ready', () => {
@@ -27,13 +24,8 @@ async function main() {
 
   toolkit.action({
     action: 'invest',
-    actionDescription: 'invests(lends, stake, PoS) assets into the market and receives cTokens in exchange on BNB (a.k.a. BSC) blockchain.',
+    actionDescription: 'invests (lends, stake, PoS) assets into the market and receives cTokens in exchange on BNB (a.k.a. BSC) blockchain.',
     payloadDescription: {
-      wallet: {
-        type: 'string',
-        description: 'The wallet that supplies the investment(lending, staking, PoS) fund, only support BNB (a.k.a. BSC) for now.',
-        required: true,
-      },
       chain: {
         type: 'string',
         description: 'The chain name, only support BNB (a.k.a. BSC) for now.',
@@ -69,11 +61,6 @@ async function main() {
     action: 'supply',
     actionDescription: 'supplies(lends, stake, PoS) assets into the market and receives cTokens in exchange on BNB (a.k.a. BSC) blockchain.',
     payloadDescription: {
-      wallet: {
-        type: 'string',
-        description: 'The wallet that supplies the investment(lending, staking, PoS) fund, only support BNB (a.k.a. BSC) for now.',
-        required: true,
-      },
       chain: {
         type: 'string',
         description: 'The chain name, only support BNB (a.k.a. BSC) for now.',
