@@ -11,7 +11,7 @@ async function getTokenAddress(token: string) : Promise<string> {
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
-  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:process.env.FRONTEND_URL });
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:process.env.TRANSACTION_BUILD_URL });
   
   await toolkit.updateToolkit({
     name: 'Venus',
@@ -38,7 +38,7 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for BNB.',
+        description: 'The token symbol or ticker of underlying asset. Leave blank for BNB.',
         required: false,
       },
       action: {
@@ -73,7 +73,7 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset. Leave blank for BNB.',
+        description: 'The token symbol or ticker of underlying asset. Leave blank for BNB.',
         required: false,
       },
       action: {
@@ -113,7 +113,7 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset to redeem.',
+        description: 'The token symbol or ticker of underlying asset to redeem.',
         required: false,
       },
       action: {
@@ -123,7 +123,7 @@ async function main() {
       },
       token: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset to redeem.',
+        description: 'The token symbol or ticker of underlying asset to redeem.',
         required: false,
       },
     }
@@ -164,12 +164,12 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset to withdraw.',
+        description: 'The token symbol or ticker of underlying asset to withdraw.',
         required: false,
       },
       token: {
         type: 'string',
-        description: 'The token address or contract address or symbol or ticker of underlying asset to redeem.',
+        description: 'The token symbol or ticker of underlying asset to redeem.',
         required: false,
       },
       action: {
@@ -215,12 +215,12 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The identifier of the token to borrow. Can be a token symbol (e.g., "BNB", "USDT"), contract address, or token code. If not specified, defaults to BNB.',
+        description: 'The identifier of the token to borrow. Can be a token symbol (e.g., "BNB", "USDT"). If not specified, defaults to BNB.',
         required: false,
       },
       token: {
         type: 'string',
-        description: 'The identifier of the token to use as collateral. Can be a token symbol, contract address, or token code. If not specified, will use the default collateral.',
+        description: 'The identifier of the token to use as collateral. Can be a token symbol or token code. If not specified, will use the default collateral.',
         required: false,
       },
       action: {
@@ -266,12 +266,12 @@ async function main() {
       },
       asset: {
         type: 'string',
-        description: 'The identifier of the token to repay. Can be a token symbol (e.g., "BNB", "USDT"), contract address, or token code. If not specified, defaults to BNB.',
+        description: 'The identifier of the token to repay. Can be a token symbol (e.g., "BNB", "USDT") or token code. If not specified, defaults to BNB.',
         required: false,
       },
       token: {
         type: 'string',
-        description: 'The identifier of the token being repaid. Should match the token that was initially borrowed. Can be a token symbol, contract address, or token code.',
+        description: 'The identifier of the token being repaid. Should match the token that was initially borrowed. Can be a token symbol or token code.',
         required: false,
       },
       action: {
