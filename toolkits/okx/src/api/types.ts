@@ -388,27 +388,4 @@ export type GetAllTokenBalancesByAddressResult = Array<{
   }[];
 }>;
 
-export type Investment = {
-  investmentId: string;
-  investmentName: string;
-  InvestType: string;
-  chain: string;
-  platform: string;
-  tvl: string;
-  rate: string;
-  rateType: string;
-  underlyingToken: any[];
-};
-
-export type TokenInfo = {
-  coinAmount: string;
-  tokenAddress: string;
-};
-
-export type InvestmentRequest = {
-  address: string;
-  investmentId: string;
-  userInputList: TokenInfo[];
-  expectOutputList: TokenInfo[];
-};
 
