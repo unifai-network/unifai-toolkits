@@ -58,18 +58,18 @@ toolkit.action(
       const markets = await getMarkets(chainId);
       if(IsEVMAddress(tokenOut)) {
         if(type === "PTYT") {
-          const ytToken = markets.find(market => market.yt.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
-                          markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase());
+          const ytToken = (markets.find(market => market.yt.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
+                          markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase()))?.yt;
           if(ytToken) {
-            payload.yt = tokenOut;
+            payload.yt = ytToken;
           }else {
             return ctx.result({ error: `YT token ${tokenOut} not found` });
           }
         }else {
-          const syToken = markets.find(market => market.sy.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
-                          markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase());
+          const syToken = (markets.find(market => market.sy.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
+                          markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase()))?.sy;
           if(syToken) {
-            payload.sy = tokenOut;
+            payload.sy = syToken;
           }else {
             return ctx.result({ error: `SY token ${tokenOut} not found` });
           }
