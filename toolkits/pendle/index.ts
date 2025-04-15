@@ -4,6 +4,7 @@ import "./src/actions/mint";
 import "./src/actions/redeem";
 import "./src/actions/addLiquidity";
 import "./src/actions/removeLiquidity";
+import "./src/actions/getPendleAssetInfomation";
 
 async function main() {
   await toolkit.updateToolkit({
