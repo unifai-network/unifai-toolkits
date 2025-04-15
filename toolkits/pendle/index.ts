@@ -1,6 +1,9 @@
 import { toolkit } from "./src/config";
 import "./src/actions/getListMarket";
 import "./src/actions/mint";
+import "./src/actions/redeem";
+import "./src/actions/addLiquidity";
+import "./src/actions/removeLiquidity";
 
 async function main() {
   await toolkit.updateToolkit({

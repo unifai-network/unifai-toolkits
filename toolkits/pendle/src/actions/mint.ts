@@ -53,7 +53,7 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, type, slippage, tokenOut, tokenIn, amountIn } = payload;
+      const { chain, type, tokenOut, tokenIn } = payload;
       const chainId = CHAINS[chain];
       const markets = await getMarkets(chainId);
       if(IsEVMAddress(tokenOut)) {
@@ -93,10 +93,12 @@ toolkit.action(
       }
       
       let result: any = null;
-      console.log("tokenIn", tokenIn);
-      console.log("chain", chain);
-      payload.tokenIn = await getTokenAddressBySymbol(tokenIn, chain);
-      console.log("payload.tokenIn", payload.tokenIn);
+      const tokenInAddress = await getTokenAddressBySymbol(tokenIn, chain);
+      if(tokenInAddress) {
+        payload.tokenIn = tokenInAddress;
+      }else {
+        return ctx.result({ error: `Token ${tokenIn} not found` });
+      }
       if(type === "PTYT") {
         result = await txApi.createTransaction("pendle/mint", ctx, payload);
       }else {
