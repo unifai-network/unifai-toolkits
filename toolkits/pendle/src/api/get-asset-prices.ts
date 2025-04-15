@@ -86,12 +86,6 @@ export async function getHistoricalAssetPrices(
 
   const targetPath = `/v4/${param.chainId}/prices/${param.address}/ohlcv`;
   const { data: response } = await axios.get<GetHistoricalPricesResponse>(CORE_DOMAIN + targetPath, { params: query });
-  console.log("response data", {
-    total: response.total,
-    currency: response.currency,
-    timestamp_start: response.timestamp_start,
-    timestamp_end: response.timestamp_end,
-  });
 
   const { results } = response;
 
