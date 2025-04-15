@@ -81,7 +81,7 @@ toolkit.action(
           "- Proportional YT tokens (yield rights)\n" +
           "Tradeoff: Lower capital efficiency but guaranteed no slippage.",
         required: false,
-        default: false,
+        default: true,
       },
     },
   },
@@ -92,11 +92,6 @@ toolkit.action(
       if (!chainId) {
         throw new Error(`Invalid chain: ${chain}`);
       }
-      const markets = await getMarkets(chainId);
-      const market = markets.find((market) => market.address.toLocaleLowerCase() === marketAddress.toLocaleLowerCase());
-      if (!market) {
-        throw new Error(`Market ${marketAddress} not found`);
-      }
 
       if (!IsEVMAddress(tokenIn)) {
         const tokenInAddress = await getTokenAddressBySymbol(chain, tokenIn);
@@ -104,13 +99,8 @@ toolkit.action(
           throw new Error(`Token ${tokenIn} not found`);
         }
         payload.tokenIn = tokenInAddress;
-      }else {
-        const tokenInAddress = await getTokenAddressBySymbol(chain, tokenIn);
-        if (!tokenInAddress) {
-          throw new Error(`Token ${tokenIn} not found`);
-        }
-        payload.tokenIn = tokenInAddress;
       }
+
       let result: any = null;
       if (type === "dual") {
         payload.amountTokenIn = amountIn;
