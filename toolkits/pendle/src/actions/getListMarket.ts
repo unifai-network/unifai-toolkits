@@ -5,7 +5,7 @@ import { CHAINS } from "../consts";
 
 
 toolkit.action({
-  action: "researchPendleMarketList",
+  action: "retrievePendleMarketList",
   actionDescription: "Retrieve active/expired markets with key yield trading parameters including liquidity pools, APY metrics, and tokenization details (PT/YT/SY contracts). Essential for analyzing yield opportunities, liquidity positions, and expiry timelines.",
   payloadDescription: {
     chain: {
