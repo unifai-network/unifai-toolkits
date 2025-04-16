@@ -12,7 +12,7 @@ import "./actions/subscribeInvestment";
 
 async function main() {
   await toolkit.updateToolkit({
-    name: 'OKX DeFi',
+    name: 'OKXDeFi',
     description: `OKX DeFi is a one-stop Web3 yield platform, aggregating opportunities across multiple networks/chains (e.g., ${enumKeys(Chain).join(', ')}) and protocols/platforms (e.g., ${allPlatforms.join(', ')}) for seamless asset management.`,
   });
 
