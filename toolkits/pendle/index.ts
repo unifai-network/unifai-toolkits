@@ -5,6 +5,7 @@ import "./src/actions/redeem";
 import "./src/actions/addLiquidity";
 import "./src/actions/removeLiquidity";
 import "./src/actions/getPendleAssetInfomation";
+import "./src/actions/swap";
 
 async function main() {
   await toolkit.updateToolkit({
