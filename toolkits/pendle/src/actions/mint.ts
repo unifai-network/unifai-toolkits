@@ -65,18 +65,18 @@ toolkit.action(
       const markets = await getMarkets(chainId);
       if(IsEVMAddress(tokenOut)) {
         if(type === "PTYT") {
-          const ytToken = (markets.find(market => market.yt.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
+          const ytToken = (markets.find(market => market.yt.toLowerCase() === tokenOut.toLowerCase()) ||
                           markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase()))?.yt;
           if(ytToken) {
-            payload.yt = ytToken.replace(`${chainId}-`, "");
+            payload.yt = ytToken;
           }else {
             return ctx.result({ error: `YT token ${tokenOut} not found` });
           }
         }else {
-          const syToken = (markets.find(market => market.sy.toLowerCase() === `${chainId}-`+ tokenOut.toLowerCase()) ||
+          const syToken = (markets.find(market => market.sy.toLowerCase() === tokenOut.toLowerCase()) ||
                           markets.find(market => market.address.toLowerCase() === tokenOut.toLowerCase()))?.sy;
           if(syToken) {
-            payload.sy = syToken.replace(`${chainId}-`, "");
+            payload.sy = syToken;
           }else {
             return ctx.result({ error: `SY token ${tokenOut} not found` });
           }
@@ -85,14 +85,14 @@ toolkit.action(
         if(type === "PTYT") {
           const market = markets.find(market => market.name.toLowerCase() === tokenOut.toLowerCase());
           if(market) {
-            payload.yt = market.yt.replace(`${chainId}-`, "");
+            payload.yt = market.yt;
           }else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }
         }else {
           const market = markets.find(market => market.name.toLowerCase() === tokenOut.toLowerCase());
           if(market) {
-            payload.sy = market.sy.replace(`${chainId}-`, "");
+            payload.sy = market.sy;
           }else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }

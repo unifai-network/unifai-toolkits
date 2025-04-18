@@ -77,21 +77,21 @@ toolkit.action(
       if (IsEVMAddress(tokenIn)) {
         if (type === "PTYT") {
           const ytToken = (
-            markets.find((market) => market.yt.toLowerCase() === `${chainId}-` + tokenIn.toLowerCase()) ||
+            markets.find((market) => market.yt.toLowerCase() === tokenIn.toLowerCase()) ||
             markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase())
           )?.yt;
           if (ytToken) {
-            payload.yt = ytToken.replace(`${chainId}-`, "");
+            payload.yt = ytToken;
           } else {
             return ctx.result({ error: `YT token ${tokenIn} not found` });
           }
         } else {
           const syToken = (
-            markets.find((market) => market.sy.toLowerCase() === `${chainId}-` + tokenIn.toLowerCase()) ||
+            markets.find((market) => market.sy.toLowerCase() === tokenIn.toLowerCase()) ||
             markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase())
           )?.sy;
           if (syToken) {
-            payload.sy = syToken.replace(`${chainId}-`, "");
+            payload.sy = syToken;
           } else {
             return ctx.result({ error: `SY token ${tokenIn} not found` });
           }
@@ -100,14 +100,14 @@ toolkit.action(
         if (type === "PTYT") {
           const market = markets.find((market) => market.name.toLowerCase() === tokenOut.toLowerCase());
           if (market) {
-            payload.yt = market.yt.replace(`${chainId}-`, "");
+            payload.yt = market.yt;
           } else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }
         } else {
           const market = markets.find((market) => market.name.toLowerCase() === tokenOut.toLowerCase());
           if (market) {
-            payload.sy = market.sy.replace(`${chainId}-`, "");
+            payload.sy = market.sy;
           } else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }

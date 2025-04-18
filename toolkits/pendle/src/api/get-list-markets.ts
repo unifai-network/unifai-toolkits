@@ -31,5 +31,13 @@ export async function getMarkets(chainId: number) {
 
   const { markets } = data;
 
+  // delete markets pt/yt/sy/underlyingAsset prefix ${chainId}-
+  markets.forEach(market => {
+    market.pt = market.pt.replace(`${chainId}-`, "");
+    market.yt = market.yt.replace(`${chainId}-`, "");
+    market.sy = market.sy.replace(`${chainId}-`, "");
+    market.underlyingAsset = market.underlyingAsset.replace(`${chainId}-`, "");
+  });
+
   return markets;
 }
