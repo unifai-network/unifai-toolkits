@@ -3,16 +3,16 @@ import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 import { getMarkets } from "../api";
 import { CHAINS } from "../consts";
-import { IsEVMAddress } from "../utils";
+import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
 
 toolkit.action(
   {
     action: "redeem",
     actionDescription:
-      "Convert SY tokens or PT/YT pairs back to underlying assets. Two modes supported:\n" +
-      "1. **PTYT Mode**: Burn PT + YT (pre-expiry) or PT-only (post-expiry) to redeem principal + accrued yield.\n" +
-      "2. **SY Mode**: Burn SY tokens to redeem underlying yield-bearing assets (e.g. stETH, aUSDC).",
+      "Convert SY tokens or PT and YT pairs back to yield token or base token. Two modes supported:\n" +
+      "1. **PTYT Mode**: Burn PT + YT (pre-expiry) or PT-only (post-expiry) to redeem yield token or base token.\n" +
+      "2. **SY Mode**: Burn SY tokens to redeem yield-bearing token or base token (e.g. stETH, aUSDC, USDC).",
     payloadDescription: {
       chain: {
         type: "string",
@@ -42,8 +42,8 @@ toolkit.action(
         description:
           "Output asset specification. Accepted formats:\n" +
           "- **Direct Address**: Underlying asset (e.g. 0x...stETH) or base token (e.g. USDC)\n" +
-          "- **Symbol**: Registered asset symbol (case-sensitive, e.g. 'stETH', 'USDC')\n" +
-          "Must be compatible with input tokens (e.g. redeeming SY_stETH requires tokenOut=stETH or WETH).",
+          "- **Symbol**: yield token or base token (case-insensitive, e.g. 'stETH', 'USDC').\n" +
+          "when tokenOut is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
         required: true,
       },
       tokenIn: {
@@ -60,6 +60,12 @@ toolkit.action(
         description:
           "Amount of tokenIn to process. Must be in base units (wei for ETH, integer decimals for ERC-20). Example: For 1.5 USDC (6 decimals), input '1.5'.",
         required: true,
+      },
+      enableAggregator: {
+        type: "boolean",
+        description: "Only need when tokenOut is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        required: false,
+        default: false,
       },
     },
   },
@@ -107,14 +113,17 @@ toolkit.action(
           }
         }
       }
-
-      let result: any = null;
+      
       const tokenOutAddress = await getTokenAddressBySymbol(tokenOut, chain);
       if (tokenOutAddress) {
         payload.tokenOut = tokenOutAddress;
       } else {
         return ctx.result({ error: `Token ${tokenOut} not found` });
       }
+      
+      payload.tokenOut = redefineGasToken(payload.tokenOut);
+      
+      let result: any = null;
       if (type === "PTYT") {
         result = await txApi.createTransaction("pendle/redeem", ctx, payload);
       } else {

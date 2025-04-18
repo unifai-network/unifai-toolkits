@@ -3,14 +3,17 @@ import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 import { getMarkets } from "../api";
 import { CHAINS } from "../consts";
-import { IsEVMAddress } from "../utils";
+import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
 
 toolkit.action(
   {
     action: "addLiquidity",
     actionDescription:
-      "Provide liquidity to PT trading markets through single or dual asset deposits. Liquidity providers earn trading fees while enabling price discovery for Principal Tokens (PT) based on yield expectations.",
+      "Add liquidity to Pendle Protocol's Principal Token (PT) trading markets. This action allows users to provide liquidity in two ways:\n" +
+      "1. Single-sided deposit: Users can deposit a single asset (SY token, base token like USDC, or PT token) to provide liquidity\n" +
+      "2. Dual-sided deposit: Users can deposit both base/SY tokens and PT tokens simultaneously to maintain pool balance\n" +
+      "The action supports features like Zero Price Impact (ZPI) mode for slippage-free deposits and optional swap aggregator for token conversions.",
     payloadDescription: {
       chain: {
         type: "string",
@@ -32,11 +35,16 @@ toolkit.action(
           dual: "Requires precise base/SY and PT ratio matching pool composition",
         },
       },
+      enableAggregator: {
+        type: "boolean",
+        description: "Only need when type is single and tokenIn is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        required: false,
+        default: false,
+      },
       marketAddress: {
         type: "string",
         description:
-          "Target market identifier for liquidity provisioning. Accepts one resolution format:\n" +
-          "1. **Direct Market Address**: '0x3124d4...ef1' (preferred for deterministic routing)",
+          "Target market address for liquidity provisioning.",
         required: true,
         examples: ["0x3124d41708edbdc... (Market Address)"],
       },
@@ -100,6 +108,8 @@ toolkit.action(
         }
         payload.tokenIn = tokenInAddress;
       }
+
+      payload.tokenIn = redefineGasToken(payload.tokenIn);
 
       let result: any = null;
       if (type === "dual") {

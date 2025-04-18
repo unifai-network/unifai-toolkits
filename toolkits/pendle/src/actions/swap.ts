@@ -3,14 +3,14 @@ import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 import { getMarkets } from "../api";
 import { CHAINS } from "../consts";
-import { IsEVMAddress } from "../utils";
+import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
 
 toolkit.action(
   {
     action: "swap",
     actionDescription: 
-      "Execute token swaps within Pendle's ecosystem, with two modes:\n" +
+      "Swap between tokens(base token or yield token or Pendle SY token) and Pendle market token(PT/YT). Only callable until the market's expiry.Swapping between PT and YT is not supported. two modes:\n" +
       "1. **Native Swap**: Directly trade SY/PT/YT/underlying assets within the specified Pendle market pool.\n" +
       "2. **Aggregated Swap**: Route through external DEXs (e.g. Uniswap, 1inch) when tokens cannot be natively converted within the Pendle market. Combines Pendle AMM and external liquidity.",
     payloadDescription: {
@@ -100,6 +100,9 @@ toolkit.action(
         }
         payload.tokenOut = tokenOutAddress;
       }
+
+      payload.tokenIn = redefineGasToken(payload.tokenIn);
+      payload.tokenOut = redefineGasToken(payload.tokenOut);
       
       const result = await txApi.createTransaction("pendle/swap", ctx, payload);
       
