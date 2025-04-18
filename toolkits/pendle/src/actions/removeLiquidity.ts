@@ -3,7 +3,7 @@ import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
 import { getAssetPrices, getAssets, getMarkets } from "../api";
 import { CHAINS } from "../consts";
-import { IsEVMAddress } from "../utils";
+import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
 
 toolkit.action(
@@ -57,6 +57,12 @@ toolkit.action(
           "Examples: '0.1' (1 USDC with 6 decimals)",
         required: true,
       },
+      enableAggregator: {
+        type: "boolean",
+        description: "Only need when tokenOut is base token symbol or address and type is single, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        required: false,
+        default: false,
+      },
     },
   },
   async (ctx: ActionContext, payload: any = {}) => {
@@ -84,6 +90,7 @@ toolkit.action(
       const priceOfPT = prices[marketAddress.toLowerCase()];
 
       payload.amountIn = ((amountOut * priceOfTokenOut) / priceOfPT).toFixed(18);
+      payload.tokenOut = redefineGasToken(payload.tokenOut);
       let result: any = null;
       if (type === "dual") {
         result = await txApi.createTransaction("pendle/remove-liquidity-dual", ctx, payload);
