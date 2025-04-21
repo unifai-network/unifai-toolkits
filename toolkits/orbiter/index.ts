@@ -25,13 +25,25 @@ async function main() {
         srcChain: {
           type: "string",
           description:
-            "Source evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
+            "Source chain, for example: 'ethereum', 'base', 'bnb', 'polygon', 'solana', etc",
           required: true,
         },
         dstChain: {
           type: "string",
           description:
-            "Destination evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
+            "Destination chain, for example: 'ethereum', 'base', 'bnb', 'polygon', 'solana', etc",
+          required: true,
+        },
+        srcAddress: {
+          type: "string",
+          description:
+            "Source address",
+          required: true,
+        },
+        dstAddress: {
+          type: "string",
+          description:
+            "Destination address",
           required: true,
         },
         srcTokenSymbol: {
