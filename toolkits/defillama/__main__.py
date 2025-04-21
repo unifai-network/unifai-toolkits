@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     toolkit = unifai.Toolkit(api_key=os.getenv("TOOLKIT_API_KEY"))
 
-    asyncio.run(toolkit.update_toolkit(name="Defi Llama", description="Fetch defi data from Defi Llama"))
+    asyncio.run(toolkit.update_toolkit(name="DefiLlama", description="Fetch defi data from Defi Llama"))
 
     @toolkit.event
     async def on_ready():

@@ -41,7 +41,7 @@ async function main() {
       },
       amount: {
         type: 'number',
-        description: 'Amount of input token to swap',
+        description: 'Amount of input token to swap. If you want to get a certain amount of output token, you need to use the current token price to calculate the amount of input token.',
       },
     }
   }, async (ctx: ActionContext, payload: any = {}) => {

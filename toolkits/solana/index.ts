@@ -40,14 +40,14 @@ async function main() {
       },
       tokenAddress: {
         type: 'string', 
-        description: 'Token address or contract address or symbol or ticker',
+        description: 'Token address or contract address or symbol or ticker. If not provided, the balance of SOL will be returned.',
         required: false,
       },
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       const walletAddress = new PublicKey(payload.walletAddress);
-      if (!payload.tokenAddress) {
+      if (!payload.tokenAddress || payload.tokenAddress.toLowerCase() === 'sol') {
         const balance = await connection.getBalance(walletAddress);
         return ctx.result(`Balance of SOL: ${balance / LAMPORTS_PER_SOL}`);
       }
@@ -70,6 +70,35 @@ async function main() {
       return ctx.result(`Balance of ${payload.tokenAddress}: ${tokenData.parsed?.info?.tokenAmount?.uiAmount || 0}`);
     } catch (error) {
       return ctx.result({ error: `Failed to get balance: ${error}` });
+    }
+  });
+
+  toolkit.action({
+    action: 'transfer',
+    actionDescription: 'Transfer SOL or an SPL token from one Solana wallet address to another',
+    payloadDescription: {
+      toWalletAddress: {
+        type: 'string',
+        description: 'Solana wallet address to transfer to',
+        required: true,
+      },
+      amount: {
+        type: 'number', 
+        description: 'Amount of SOL or tokens to transfer',
+        required: true,
+      },
+      tokenAddress: {
+        type: 'string', 
+        description: 'Token address or contract address or symbol or ticker to transfer. If not provided, the transfer will be SOL.',
+        required: false,
+      },
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      const result = await api.createTransaction('solana/transfer', ctx, payload);
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to create transaction: ${error}` });
     }
   });
 

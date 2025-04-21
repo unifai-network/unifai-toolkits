@@ -1,0 +1,19 @@
+{
+  "name": "@unifai-toolkits/wormhole",
+  "version": "1.0.0",
+  "description": "Wormhole bridge toolkit for UnifAI",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "@types/node": "^20.11.0",
+    "dotenv": "^16.3.1",
+    "unifai-sdk": "latest",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "ts-node": "^10.9.2"
+  }
+}

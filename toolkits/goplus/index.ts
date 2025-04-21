@@ -17,7 +17,7 @@ async function main() {
   const api = new GoplusAPI();
 
   await toolkit.updateToolkit({
-    name: 'GoPlus Security',
+    name: 'GoPlusSecurity',
     description: "GoPlus Security provides fast, reliable, and convenient security services",
   });
 

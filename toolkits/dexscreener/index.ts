@@ -9,8 +9,8 @@ async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'DEX Screener',
-    description: "DEX Screener provides token information",
+    name: 'DexScreener',
+    description: "DexScreener provides token information",
   });
 
   toolkit.event('ready', () => {

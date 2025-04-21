@@ -17,7 +17,7 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Compound-V2',
+    name: 'CompoundV2',
     description: "Interact with the Compound lending platform (v2).",
   });
 

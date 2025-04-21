@@ -17,7 +17,7 @@ logging.getLogger('httpx').setLevel(logging.WARNING)
 if __name__ == "__main__":
     toolkit = unifai.Toolkit(api_key=os.getenv("TOOLKIT_API_KEY"))
 
-    asyncio.run(toolkit.update_toolkit(name="Web3 News", description="Fetch the latest Web3 news"))
+    asyncio.run(toolkit.update_toolkit(name="Web3News", description="Fetch the latest Web3 news"))
 
     @toolkit.event
     async def on_ready():
