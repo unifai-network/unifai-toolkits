@@ -12,7 +12,8 @@ toolkit.action(
     actionDescription:
       "Convert SY tokens or PT and YT pairs back to yield token or base token. Two modes supported:\n" +
       "1. **PTYT Mode**: Burn PT + YT (pre-expiry) or PT-only (post-expiry) to redeem yield token or base token.\n" +
-      "2. **SY Mode**: Burn SY tokens to redeem yield-bearing token or base token (e.g. stETH, aUSDC, USDC).",
+      "2. **SY Mode**: Burn SY tokens to redeem yield-bearing token or base token (e.g. stETH, aUSDC, USDC).\n" +
+      "With enableAggregator=true, you can receive ANY ERC20 token directly (no separate swap needed).",
     payloadDescription: {
       chain: {
         type: "string",
@@ -41,10 +42,10 @@ toolkit.action(
         type: "string",
         description:
           "Output asset specification. Accepted formats:\n" +
-          "- **Direct Address**: Underlying asset (e.g. 0x...stETH) or base token (e.g. USDC)\n" +
-          "- **Symbol**: yield token or base token (case-insensitive, e.g. 'stETH', 'USDC').\n" +
-          "when tokenOut is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+          "- **With enableAggregator=true**: ANY ERC20 token (address or symbol) can be received directly\n" +
+          "- **Without aggregator**: Only yield token/base token of the market or direct address",
         required: true,
+        examples: ["stETH (yield token)", "USDC (base token)", "ANY ERC20 token (with enableAggregator=true)"]
       },
       tokenIn: {
         type: "string",
@@ -63,7 +64,7 @@ toolkit.action(
       },
       enableAggregator: {
         type: "boolean",
-        description: "Only need when tokenOut is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        description: "When true, allows receiving ANY ERC20 token as output (e.g., redeem PT-stETH directly to USDC without separate swapping). Routes through external DEXs to convert tokens that cannot be natively converted from/to the underlying asset. NOTE: Only applicable when tokenOut is a base token symbol or address.",
         required: false,
         default: false,
       },

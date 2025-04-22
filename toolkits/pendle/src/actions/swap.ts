@@ -10,9 +10,9 @@ toolkit.action(
   {
     action: "swap",
     actionDescription: 
-      "Swap between tokens(base token or yield token or Pendle SY token) and Pendle market token(PT/YT). Only callable until the market's expiry.Swapping between PT and YT is not supported. two modes:\n" +
+      "Swap between tokens(base token or yield token or Pendle SY token) and Pendle market token(PT/YT). Only callable until the market's expiry. Swapping between PT and YT is not supported. Two modes:\n" +
       "1. **Native Swap**: Directly trade SY/PT/YT/underlying assets within the specified Pendle market pool.\n" +
-      "2. **Aggregated Swap**: Route through external DEXs (e.g. Uniswap, 1inch) when tokens cannot be natively converted within the Pendle market. Combines Pendle AMM and external liquidity.",
+      "2. **Aggregated Swap**: With enableAggregator=true, swap ANY ERC20 token to ANY other ERC20 token in a single transaction. Routes through external DEXs when needed, eliminating the need for separate swap transactions.",
     payloadDescription: {
       chain: {
         type: "string",
@@ -40,10 +40,10 @@ toolkit.action(
       enableAggregator: {
         type: "boolean",
         description: 
-          "Enable cross-protocol token routing via external DEXs. Use cases:\n" +
-          "- Swapping between non-native pairs (e.g. YT to DAI)\n" +
-          "- Optimizing prices by combining Pendle liquidity with external pools\n" +
-          "Default: false (pure Pendle-native swaps)",
+          "When true, allows swapping ANY ERC20 token to ANY other ERC20 token in a single transaction. Key benefits:\n" +
+          "- Eliminates the need for separate swap transactions (e.g., swap USDC directly to PT-stETH)\n" +
+          "- Handles tokens not natively supported by Pendle markets\n" +
+          "- Optimizes prices by combining Pendle liquidity with external DEXs",
         required: false,
         default: false
       },
@@ -51,20 +51,19 @@ toolkit.action(
         type: "string",
         description: 
           "Input token identifier. Accepted values:\n" +
-          "- **Pendle-native**: SY/PT/YT address from the `market`\n" +
-          "- **Underlying asset**: Address (e.g. 'stETH', '0x...')\n" +
-          "- **External token**: Address/symbol (requires enableAggregator=true)\n",
+          "- **With enableAggregator=true**: ANY ERC20 token (address or symbol) can be used\n" +
+          "- **Without aggregator**: Only accepts Pendle-native tokens (SY/PT/YT) or market's underlying asset",
         required: true,
-        examples: ["0x83...913 (SY)", "0x2a...deb (PT)", "0x32...d9e (YT)", "USDC or 0x2a...deb (base token symbol)"],
+        examples: ["0x83...913 (SY)", "0x2a...deb (PT)", "0x32...d9e (YT)", "USDC (base token symbol)", "ANY ERC20 token (with enableAggregator=true)"],
       },
       tokenOut: {
         type: "string",
         description: 
-          "Output token identifier. Must form a valid path with tokenIn:\n" +
-          "- **Native path**: SY/PT/YT/underlying address (within market)\n" +
-          "- **Aggregated path**: Any ERC-20 address/symbol (if enableAggregator=true)\n",
+          "Output token identifier. Accepted values:\n" +
+          "- **With enableAggregator=true**: ANY ERC20 token (address or symbol) can be received\n" +
+          "- **Without aggregator**: Only accepts Pendle-native tokens (SY/PT/YT) or market's underlying asset",
         required: true,
-        examples: ["0x83...913 (SY)", "0x2a...deb (PT)", "0x32...d9e (YT)", "USDC or 0x2a...deb (base token symbol)"],
+        examples: ["0x83...913 (SY)", "0x2a...deb (PT)", "0x32...d9e (YT)", "USDC (base token symbol)", "ANY ERC20 token (with enableAggregator=true)"],
       },
       amountIn: {
         type: "string",

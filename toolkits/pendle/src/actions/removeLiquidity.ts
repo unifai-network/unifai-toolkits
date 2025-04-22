@@ -10,7 +10,7 @@ toolkit.action(
   {
     action: "removeLiquidity",
     actionDescription:
-      "Remove liquidity from PT trading markets through single or dual asset withdrawals. Yield rights holders can redeem their yield rights for base tokens.",
+      "Remove liquidity from PT trading markets through single or dual asset withdrawals. Yield rights holders can redeem their yield rights for base tokens. With enableAggregator=true, liquidity can be directly withdrawn as ANY ERC20 token in a single transaction.",
     payloadDescription: {
       chain: {
         type: "string",
@@ -46,9 +46,9 @@ toolkit.action(
       },
       tokenOut: {
         type: "string",
-        description: "Token to withdraw from the market. Must be a valid token address or a valid token symbol.",
+        description: "Token to withdraw from the market. When enableAggregator=true, this can be ANY ERC20 token (address or symbol). Otherwise, must be a valid token from the market (SY, base token).",
         required: true,
-        examples: ["0x83...913 (SY)", "USDC (base token symbol)"],
+        examples: ["0x83...913 (SY)", "USDC (base token symbol)", "ANY ERC20 token (with enableAggregator=true)"],
       },
       amountOut: {
         type: "string",
@@ -59,7 +59,7 @@ toolkit.action(
       },
       enableAggregator: {
         type: "boolean",
-        description: "Only need when tokenOut is base token symbol or address and type is single, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        description: "When true, allows withdrawing liquidity directly as ANY ERC20 token (e.g., receive USDC when removing liquidity from a stETH market) in a single transaction, eliminating the need for separate swaps. Routes through external DEXs when needed. NOTE: Only applicable when type=single and tokenOut is a base token symbol or address.",
         required: false,
         default: false,
       },
