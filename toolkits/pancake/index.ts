@@ -14,8 +14,8 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:process.env.TRANSACTION_BUILD_URL });
   
   await toolkit.updateToolkit({
-    name: 'Pancake',
-    description: "Supply or borrow tokens on BNB (a.k.a. BSC) blockchain using Pancake Protocol",
+    name: 'Pancake V3',
+    description: "Supply or borrow tokens on BNB (a.k.a. BSC) blockchain using Pancake V3 Protocol",
   });
 
   toolkit.event('ready', () => {
@@ -115,7 +115,8 @@ async function main() {
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       payload.action = 'add liquidity';
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      payload.chain = 'bsc';
+      const result = await api.createTransaction('pancake/v3/add-liquidity', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to add transaction: ${error}` });
@@ -124,32 +125,17 @@ async function main() {
 
   toolkit.action({
     action: 'remove liquidity',
-    actionDescription: 'Remove liquidity from a PancakeSwap liquidity pool and receive both tokens in return. This action allows you to withdraw your liquidity provider position.',
+    actionDescription: 'Remove liquidity from a PancakeSwap V3 liquidity pool and receive both tokens in return. This action allows you to withdraw your liquidity provider position.',
     payloadDescription: {
       chain: {
         type: 'string',
         description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
         required: true,
       },
-      amount: {
+      tokenId: {
         type: 'string',
-        description: 'The amount of LP tokens to remove from the liquidity pool.',
+        description: 'The unique identifier of the liquidity position NFT, In PancakeSwap V3, each liquidity position is represented as an NFT,and tokenId is used to identify which position to remove liquidity from. if it is empty, just call the getTokenIds action.',
         required: true,
-      },
-      asset: {
-        type: 'string',
-        description: 'The token symbol or address of the first token in the pair.',
-        required: true,
-      },
-      asset2: {
-        type: 'string',
-        description: 'The token symbol or address of the second token in the pair.',
-        required: true,
-      },
-      slippage: {
-        type: 'string',
-        description: 'The maximum acceptable slippage percentage for the transaction (e.g., "0.5" for 0.5%).',
-        required: false,
       },
       deadline: {
         type: 'string',
@@ -160,7 +146,11 @@ async function main() {
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       payload.action = 'remove liquidity';
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      payload.chain = 'bsc';
+      if (payload.tokenId.length === 0){
+        return ctx.result({ error: `tokenId can't be empty` });
+      }
+      const result = await api.createTransaction('pancake/v3/remove-liquidity', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to remove transaction: ${error}` });
