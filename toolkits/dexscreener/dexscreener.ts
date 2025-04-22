@@ -27,12 +27,22 @@ export const tokenAddressMap = {
   },
 }
 
+export const chainAliasMap = {
+  "sol": "solana",
+  "eth": "ethereum",
+  "bnb": "bsc",
+}
+
 function getLiquidity(pair: any) {
   return Math.min(pair?.liquidity?.usd - pair?.liquidity?.base * pair?.priceUsd, pair?.liquidity?.base * pair?.priceUsd) || 0;
 }
 
 export async function getTokenBySymbol(symbol: string, chain?: string) {
   symbol = symbol.toLowerCase();
+  chain = chain?.toLowerCase();
+  if (chain && chainAliasMap[chain]) {
+    chain = chainAliasMap[chain];
+  }
 
   if (tokenAddressMap[symbol]) {
     if (chain) {
@@ -86,6 +96,11 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
 }
 
 export async function getTokenAddressBySymbol(token: string, chain?: string) : Promise<string | null> {
+  chain = chain?.toLowerCase();
+  if (chain && chainAliasMap[chain]) {
+    chain = chainAliasMap[chain];
+  }
+
   const result = await getTokenBySymbol(token, chain);
   if (Object.keys(result).length === 0) {
     return null;

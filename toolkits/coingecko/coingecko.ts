@@ -31,8 +31,18 @@ export const tokenAddressMap = {
   },
 }
 
+export const chainAliasMap = {
+  "sol": "solana",
+  "eth": "ethereum",
+  "bnb": "bsc",
+}
+
 export async function getTokenBySymbol(symbol: string, chain?: string) {
   symbol = symbol.toLowerCase();
+  chain = chain?.toLowerCase();
+  if (chain && chainAliasMap[chain]) {
+    chain = chainAliasMap[chain];
+  }
 
   if (tokenAddressMap[symbol]) {
     if (chain) {
@@ -56,6 +66,11 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
 }
 
 export async function getTokenAddressBySymbol(token: string, chain?: string) {
+  chain = chain?.toLowerCase();
+  if (chain && chainAliasMap[chain]) {
+    chain = chainAliasMap[chain];
+  }
+
   const result = await getTokenBySymbol(token, chain);
   if (Object.keys(result).length === 0) {
     return null;
