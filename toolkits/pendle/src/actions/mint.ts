@@ -10,7 +10,7 @@ toolkit.action(
   {
     action: "mint",
     actionDescription:
-      "Use yield-bearing assets or base token to mint SY tokens or mint Principal Tokens (PT) and Yield Tokens (YT). This enables yield decomposition and flexible management of principal vs future income streams.",
+      "Use yield-bearing assets or base token to mint SY tokens or mint Principal Tokens (PT) and Yield Tokens (YT). This enables yield decomposition and flexible management of principal vs future income streams. When enableAggregator=true, ANY ERC20 token can be used as input - no separate swap required.",
     payloadDescription: {
       chain: {
         type: "string",
@@ -40,9 +40,9 @@ toolkit.action(
       tokenIn: {
         type: "string",
         description:
-          "Input asset identifier. Accepts three types: 1) Yield-bearing assets (e.g. stETH, aUSDC), 2) Standardized Yield Tokens (SY contract address), 3) Base tokens (e.g. USDC, USDT, ETH/WETH). Can be provided as: symbol (case-sensitive), contract address, or common ticker.",
+          "Input asset identifier. When enableAggregator=true, ANY ERC20 token can be used (no separate swap needed). Otherwise accepts: 1) Yield-bearing assets (e.g. stETH, aUSDC), 2) Standardized Yield Tokens (SY contract address), 3) Base tokens (e.g. USDC, USDT, ETH/WETH). Can be provided as: symbol (case-sensitive), contract address, or common ticker.",
         required: true,
-        examples: ["stETH (yield-bearing)", "0x83...913 (SY contract)", "USDC (base token)", "ETH (native token)"],
+        examples: ["stETH (yield-bearing)", "0x83...913 (SY contract)", "USDC (base token)", "ETH (native token)", "ANY ERC20 token (when enableAggregator=true)"],
       },
       amountIn: {
         type: "string",
@@ -52,7 +52,7 @@ toolkit.action(
       },
       enableAggregator: {
         type: "boolean",
-        description: "Only need when tokenIn is base token symbol, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        description: "When true, allows using ANY ERC20 token as input (e.g., USDC to mint PT-stETH directly without separate swapping). Routes through external DEXs (like Uniswap, 1inch) to convert tokenIn to the appropriate asset needed by the protocol. NOTE: Only applicable when tokenIn is a base token symbol.",
         required: false,
         default: false,
       },

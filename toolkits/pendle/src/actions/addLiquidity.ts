@@ -13,7 +13,7 @@ toolkit.action(
       "Add liquidity to Pendle Protocol's Principal Token (PT) trading markets. This action allows users to provide liquidity in two ways:\n" +
       "1. Single-sided deposit: Users can deposit a single asset (SY token, base token like USDC, or PT token) to provide liquidity\n" +
       "2. Dual-sided deposit: Users can deposit both base/SY tokens and PT tokens simultaneously to maintain pool balance\n" +
-      "The action supports features like Zero Price Impact (ZPI) mode for slippage-free deposits and optional swap aggregator for token conversions.",
+      "With enableAggregator=true, ANY ERC20 token can be used to add liquidity in a single transaction without needing separate swaps.",
     payloadDescription: {
       chain: {
         type: "string",
@@ -37,7 +37,7 @@ toolkit.action(
       },
       enableAggregator: {
         type: "boolean",
-        description: "Only need when type is single and tokenIn is base token symbol or address, this option enable swap aggregator to swap between tokens that cannot be natively converted from/to the underlying asset",
+        description: "When true, allows using ANY ERC20 token as input to add liquidity (e.g., use USDC to add liquidity to a stETH market directly) in a single transaction, eliminating the need for separate swaps. Routes through external DEXs to convert tokens as needed. NOTE: Only applicable when type=single and tokenIn is a base token symbol or address.",
         required: false,
         default: false,
       },
@@ -60,10 +60,10 @@ toolkit.action(
         type: "string",
         description:
           "Primary input asset identifier. Resolution varies by type:\n" +
-          "- **single**: Can be SY (e.g. SY_stETH), base token (e.g. USDC), or PT address. ZPI mode only accepts SY/base tokens.\n" +
-          "- **dual**: Must be base token (e.g. USDC) or SY address. PT is auto-bound to the market.",
+          "- **With enableAggregator=true**: ANY ERC20 token can be used (address or symbol)\n" +
+          "- **Without aggregator**: Must be SY (e.g. SY_stETH), base token (e.g. USDC), or PT address. For dual mode, must be base token or SY.",
         required: true,
-        examples: ["0x83...913 (SY)", "USDC (base token symbol)", "0x2a9e...deb (PT - single mode only)"],
+        examples: ["0x83...913 (SY)", "USDC (base token symbol)", "0x2a9e...deb (PT - single mode only)", "ANY ERC20 token (with enableAggregator=true)"],
       },
       amountIn: {
         type: "string",
