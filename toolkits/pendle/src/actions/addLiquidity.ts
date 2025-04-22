@@ -102,7 +102,7 @@ toolkit.action(
       }
 
       if (!IsEVMAddress(tokenIn)) {
-        const tokenInAddress = await getTokenAddressBySymbol(chain, tokenIn);
+        const tokenInAddress = await getTokenAddressBySymbol(tokenIn, chain);
         if (!tokenInAddress) {
           throw new Error(`Token ${tokenIn} not found`);
         }

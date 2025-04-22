@@ -73,7 +73,7 @@ toolkit.action(
         throw new Error(`Invalid chain: ${chain}`);
       }
       if (!IsEVMAddress(tokenOut)) {
-        const tokenOutAddress = await getTokenAddressBySymbol(chain, tokenOut);
+        const tokenOutAddress = await getTokenAddressBySymbol(tokenOut, chain);
         if (!tokenOutAddress) {
           throw new Error(`Token ${tokenOut} not found`);
         }
