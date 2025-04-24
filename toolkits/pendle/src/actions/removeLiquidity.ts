@@ -81,10 +81,10 @@ toolkit.action(
       }
       const prices = await getAssetPrices(chainId, [marketAddress, payload.tokenOut]);
       if (!(tokenOut.toLowerCase() in prices)) {
-        throw new Error(`Token ${tokenOut} not found`);
+        throw new Error(`Token ${tokenOut} not found in prices`);
       }
       if (!(marketAddress.toLowerCase() in prices)) {
-        throw new Error(`Market ${marketAddress} not found`);
+        throw new Error(`Market ${marketAddress} not found in markets`);
       }
       const priceOfTokenOut = prices[tokenOut.toLowerCase()];
       const priceOfPT = prices[marketAddress.toLowerCase()];
