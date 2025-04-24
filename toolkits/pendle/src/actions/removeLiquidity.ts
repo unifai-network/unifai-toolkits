@@ -50,11 +50,9 @@ toolkit.action(
         required: true,
         examples: ["0x83...913 (SY)", "USDC (base token symbol)", "ANY ERC20 token (with enableAggregator=true)"],
       },
-      amountOut: {
+      amountIn: {
         type: "string",
-        description:
-          "Input amount in tokenIn's **native decimals** (integer string). For dual mode, this represents base/SY amount.\n" +
-          "Examples: '0.1' (1 USDC with 6 decimals)",
+        description: "amount of LP token that user wants to remove from the market liquidity. for example, 0.1 LP token.",
         required: true,
       },
       enableAggregator: {
@@ -67,7 +65,7 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, type, marketAddress, tokenOut, amountOut } = payload;
+      const { chain, type, tokenOut } = payload;
       const chainId = CHAINS[chain];
       if (!chainId) {
         throw new Error(`Invalid chain: ${chain}`);
@@ -79,17 +77,7 @@ toolkit.action(
         }
         payload.tokenOut = tokenOutAddress;
       }
-      const prices = await getAssetPrices(chainId, [marketAddress, payload.tokenOut]);
-      if (!(tokenOut.toLowerCase() in prices)) {
-        throw new Error(`Token ${tokenOut} not found`);
-      }
-      if (!(marketAddress.toLowerCase() in prices)) {
-        throw new Error(`Market ${marketAddress} not found`);
-      }
-      const priceOfTokenOut = prices[tokenOut.toLowerCase()];
-      const priceOfPT = prices[marketAddress.toLowerCase()];
 
-      payload.amountIn = ((amountOut * priceOfTokenOut) / priceOfPT).toFixed(18);
       payload.tokenOut = redefineGasToken(payload.tokenOut);
       let result: any = null;
       if (type === "dual") {
