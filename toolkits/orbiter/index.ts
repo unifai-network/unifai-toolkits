@@ -5,12 +5,12 @@ import { Toolkit, ActionContext, TransactionAPI } from "unifai-sdk";
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY});
-  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY, endpoint:process.env.TRANSACTION_API_ENDPOINT});
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY});
 
   await toolkit.updateToolkit({
-    name: "OrbiterFinance test",
+    name: "OrbiterFinance",
     description:
-      "test only. Orbiter Finance provides cross-chain bridge between various blockchains, supporting transfers between EVM chains (Ethereum, Base, BNB chain, Polygon, etc.) and non-EVM chains (Solana, etc.).",
+      "Orbiter Finance provides cross-chain bridge between various blockchains, supporting transfers between EVM chains (Ethereum, Base, BNB chain, Polygon, etc.) and non-EVM chains (Solana, etc.).",
   });
 
   toolkit.event("ready", () => {
@@ -42,12 +42,12 @@ async function main() {
         },
         srcTokenSymbol: {
           type: "string",
-          description: "Source token symbol, for example: ETH, USDC, USDT, etc.",
+          description: "Source token symbol, for example: ETH, USDC, USDT, WBTC, etc.",
           required: true,
         },
         dstTokenSymbol: {
           type: "string",
-          description: "Destination token symbol, for example: ETH, USDC, USDT, etc.",
+          description: "Destination token symbol, for example: ETH, USDC, USDT, WBTC, etc.",
           required: true,
         },
         amount: {
