@@ -15,7 +15,7 @@ async function main() {
   
   await toolkit.updateToolkit({
     name: 'Pancake V3',
-    description: "Supply or borrow tokens on BNB (a.k.a. BSC) blockchain using Pancake V3 Protocol",
+    description: "Add liquidity or Remove liquidity or collect or stake on BNB (a.k.a. BSC) blockchain or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) using Pancake V3 Protocol",
   });
 
   toolkit.event('ready', () => {
@@ -28,7 +28,7 @@ async function main() {
     payloadDescription: {
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
       amount: {
@@ -65,20 +65,21 @@ async function main() {
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       payload.action = 'create pool';
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      const result = await api.createTransaction('pancake/v3/create', ctx, payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to add transaction: ${error}` });
     }
   });
 
+
   toolkit.action({
-    action: 'add liquidity',
-    actionDescription: 'Add liquidity to a PancakeSwap liquidity pool by providing both tokens in the correct ratio. This action allows you to become a liquidity provider and earn trading fees.',
+    action: 'one-click add liquidity in one step',
+    actionDescription: 'In order to one-click add liquidity in just one step, it will combine swapping tokens and adding liquidity to an existing PancakeSwap V3 pool in a single transaction. This action first swaps one token for another to achieve the desired ratio, then adds both tokens to the liquidity pool.',
     payloadDescription: {
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
       amount: {
@@ -101,9 +102,63 @@ async function main() {
         description: 'The token symbol or address of the second token in the pair.',
         required: true,
       },
-      slippage: {
+      fee: {
         type: 'string',
-        description: 'The maximum acceptable slippage percentage for the transaction (e.g., "0.5" for 0.5%).',
+        description: 'pancake v3 offers three fee tiers for liquidity providers (LPs) to choose from, depending on the trading pair’s volatility:0.05% – For stablecoin pairs (e.g., USDC/USDT, DAI/USDC); 0.30% – The default fee for most common pairs (e.g., ETH/USDC, WBTC/ETH); 1.00% – For highly volatile or exotic tokens (e.g., low-cap altcoins).',
+        required: false,
+      },
+      deadline: {
+        type: 'string',
+        description: 'The transaction deadline in seconds from now.',
+        required: false,
+      }
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      payload.action = 'swap_and_add_liquidity';
+      if (payload.chain.length == 0) {
+        payload.chain = 'bsc';
+      }
+
+      const result = await api.createTransaction('pancake/v3/add-liquidity', ctx, payload);
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to swap and add liquidity: ${error}` });
+    }
+  });
+
+  toolkit.action({
+    action: 'add liquidity',
+    actionDescription: 'Add liquidity to a PancakeSwap liquidity pool by providing both tokens in the correct ratio. This action allows you to become a liquidity provider and earn trading fees.',
+    payloadDescription: {
+      chain: {
+        type: 'string',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
+        required: true,
+      },
+      amount: {
+        type: 'string',
+        description: 'The amount of the first token to add to the liquidity pool.',
+        required: true,
+      },
+      amount2: {
+        type: 'string',
+        description: 'The amount of the second token to add to the liquidity pool.',
+        required: true,
+      },
+      asset: {
+        type: 'string',
+        description: 'The token symbol or address of the first token in the pair.',
+        required: true,
+      },
+      asset2: {
+        type: 'string',
+        description: 'The token symbol or address of the second token in the pair.',
+        required: true,
+      },
+      fee: {
+        type: 'string',
+        description: 'pancake v3 offers three fee tiers for liquidity providers (LPs) to choose from, depending on the trading pair’s volatility:0.05% – For stablecoin pairs (e.g., USDC/USDT, DAI/USDC); 0.30% – The default fee for most common pairs (e.g., ETH/USDC, WBTC/ETH); 1.00% – For highly volatile or exotic tokens (e.g., low-cap altcoins).',
         required: false,
       },
       deadline: {
@@ -115,7 +170,11 @@ async function main() {
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
       payload.action = 'add liquidity';
-      payload.chain = 'bsc';
+
+      if (payload.chain.length == 0) {
+        payload.chain = 'bsc';
+      }
+
       const result = await api.createTransaction('pancake/v3/add-liquidity', ctx, payload);
       return ctx.result(result);
     } catch (error) {
@@ -129,7 +188,7 @@ async function main() {
     payloadDescription: {
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
       tokenId: {
@@ -158,109 +217,125 @@ async function main() {
   });
 
   toolkit.action({
-    action: 'claim',
-    actionDescription: 'Collect trading fees and rewards earned from providing liquidity to PancakeSwap pools.',
+    action: 'withdraw',
+    actionDescription: 'Collect unclaimed fees from a specific liquidity position in PancakeSwap V3. This action allows you to claim trading fees earned from providing liquidity.',
     payloadDescription: {
-      wallet: {
-        type: 'string',
-        description: 'The wallet address that will receive the collected fees and rewards.',
-        required: true,
-      },
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
-      asset: {
+      tokenId: {
         type: 'string',
-        description: 'The token symbol or address of the first token in the pair.',
+        description: 'The unique identifier of the liquidity position NFT. In PancakeSwap V3, each liquidity position is represented as an NFT.',
         required: true,
       },
-      asset2: {
+      amount0Max: {
         type: 'string',
-        description: 'The token symbol or address of the second token in the pair.',
-        required: true,
+        description: 'The maximum amount of token0 to collect. If not specified, all available fees will be collected.',
+        required: false,
       },
-      amount: {
+      amount1Max: {
         type: 'string',
-        description: 'The amount of LP tokens to collect fees from.',
-        required: true,
+        description: 'The maximum amount of token1 to collect. If not specified, all available fees will be collected.',
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      if (payload.wallet) {
-        payload.wallet = await getTokenAddress(payload.wallet);
-      }
-      payload.action = 'claim';
-      if (!payload.asset) {
-        payload.asset = payload.token;
-      }
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      payload.chain = 'bsc';
+      payload.action = 'collect';
+      const result = await api.createTransaction('pancake/v3/collect', ctx, payload);
       return ctx.result(result);
     } catch (error) {
-      return ctx.result({ error: `Failed to claim: ${error}` });
+      return ctx.result({ error: `Failed to collect fees: ${error}` });
+    }
+  });
+
+  toolkit.action({
+    action: 'claim',
+    actionDescription: 'Collect unclaimed fees from a specific liquidity position in PancakeSwap V3. This action allows you to claim trading fees earned from providing liquidity.',
+    payloadDescription: {
+      chain: {
+        type: 'string',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
+        required: true,
+      },
+      tokenId: {
+        type: 'string',
+        description: 'The unique identifier of the liquidity position NFT. In PancakeSwap V3, each liquidity position is represented as an NFT.',
+        required: true,
+      },
+      amount0Max: {
+        type: 'string',
+        description: 'The maximum amount of token0 to collect. If not specified, all available fees will be collected.',
+        required: false,
+      },
+      amount1Max: {
+        type: 'string',
+        description: 'The maximum amount of token1 to collect. If not specified, all available fees will be collected.',
+        required: false,
+      }
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      payload.chain = 'bsc';
+      payload.action = 'collect';
+      const result = await api.createTransaction('pancake/v3/collect', ctx, payload);
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to collect fees: ${error}` });
     }
   });
 
   toolkit.action({
     action: 'collect',
-    actionDescription: 'Collect trading fees and rewards earned from providing liquidity to PancakeSwap pools.',
+    actionDescription: 'Collect unclaimed fees from a specific liquidity position in PancakeSwap V3. This action allows you to claim trading fees earned from providing liquidity.',
     payloadDescription: {
-      wallet: {
-        type: 'string',
-        description: 'The wallet address that will receive the collected fees and rewards.',
-        required: true,
-      },
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
-      asset: {
+      tokenId: {
         type: 'string',
-        description: 'The token symbol or address of the first token in the pair.',
+        description: 'The unique identifier of the liquidity position NFT. In PancakeSwap V3, each liquidity position is represented as an NFT.',
         required: true,
       },
-      asset2: {
+      amount0Max: {
         type: 'string',
-        description: 'The token symbol or address of the second token in the pair.',
-        required: true,
+        description: 'The maximum amount of token0 to collect. If not specified, all available fees will be collected.',
+        required: false,
       },
-      amount: {
+      amount1Max: {
         type: 'string',
-        description: 'The amount of LP tokens to collect fees from.',
-        required: true,
+        description: 'The maximum amount of token1 to collect. If not specified, all available fees will be collected.',
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      if (payload.wallet) {
-        payload.wallet = await getTokenAddress(payload.wallet);
-      }
+      payload.chain = 'bsc';
       payload.action = 'collect';
-      if (!payload.asset) {
-        payload.asset = payload.token;
-      }
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      const result = await api.createTransaction('pancake/v3/collect', ctx, payload);
       return ctx.result(result);
     } catch (error) {
-      return ctx.result({ error: `Failed to collect: ${error}` });
+      return ctx.result({ error: `Failed to collect fees: ${error}` });
     }
   });
 
   toolkit.action({
     action: 'stake',
-    actionDescription: 'Stake LP tokens in PancakeSwap farms to earn CAKE rewards and other farming rewards.',
+    actionDescription: 'Stake LP tokens in PancakeSwap V3 farms to earn CAKE rewards. This action allows you to participate in yield farming and earn additional rewards.',
     payloadDescription: {
-      wallet: {
-        type: 'string',
-        description: 'The wallet address that will stake the LP tokens.',
-        required: true,
-      },
       chain: {
         type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
+        description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
+        required: true,
+      },
+      pid: {
+        type: 'string',
+        description: 'The pool ID of the farm where you want to stake your LP tokens.',
         required: true,
       },
       amount: {
@@ -268,81 +343,28 @@ async function main() {
         description: 'The amount of LP tokens to stake in the farm.',
         required: true,
       },
-      asset: {
+      referrer: {
         type: 'string',
-        description: 'The token symbol or address of the first token in the pair.',
-        required: true,
+        description: 'Optional referrer address for referral rewards.',
+        required: false,
       },
-      asset2: {
+      deadline: {
         type: 'string',
-        description: 'The token symbol or address of the second token in the pair.',
-        required: true,
-      },
-      farmId: {
-        type: 'string',
-        description: 'The ID of the farm to stake in.',
-        required: true,
+        description: 'The transaction deadline in seconds from now.',
+        required: false,
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      if (payload.wallet) {
-        payload.wallet = await getTokenAddress(payload.wallet);
+      if (payload.referrer) {
+        payload.referrer = await getTokenAddress(payload.referrer);
       }
       payload.action = 'stake';
-      if (!payload.asset) {
-        payload.asset = payload.token;
-      }
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
+      payload.chain = 'bsc';
+      const result = await api.createTransaction('pancake/v3/stake', ctx, payload);
       return ctx.result(result);
     } catch (error) {
-      return ctx.result({ error: `Failed to stake: ${error}` });
-    }
-  });
-
-  toolkit.action({
-    action: 'find the best pool',
-    actionDescription: 'Find the best liquidity pool for a token pair on PancakeSwap based on liquidity depth and trading volume.',
-    payloadDescription: {
-      chain: {
-        type: 'string',
-        description: 'The blockchain network name. Currently only supports BSC (BNB Chain).',
-        required: true,
-      },
-      asset: {
-        type: 'string',
-        description: 'The token symbol or address of the first token in the pair.',
-        required: true,
-      },
-      asset2: {
-        type: 'string',
-        description: 'The token symbol or address of the second token in the pair.',
-        required: true,
-      },
-      amount: {
-        type: 'string',
-        description: 'The amount of tokens to trade (optional, used to calculate price impact).',
-        required: false,
-      },
-      sortBy: {
-        type: 'string',
-        description: 'The sorting criteria (e.g., "liquidity", "volume", "apr").',
-        required: false,
-      }
-    }
-  }, async (ctx: ActionContext, payload: any = {}) => {
-    try {
-      if (payload.wallet) {
-        payload.wallet = await getTokenAddress(payload.wallet);
-      }
-      payload.action = 'find the best pool';
-      if (!payload.asset) {
-        payload.asset = payload.token;
-      }
-      const result = await api.createTransaction('pancake/v3', ctx, payload);
-      return ctx.result(result);
-    } catch (error) {
-      return ctx.result({ error: `Failed to find the best pool: ${error}` });
+      return ctx.result({ error: `Failed to stake LP tokens: ${error}` });
     }
   });
 
