@@ -17,7 +17,7 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'BNB Chain',
+    name: 'BNB',
     description: "Transfer tokens on BNB (a.k.a. BSC) blockchain",
   });
 
