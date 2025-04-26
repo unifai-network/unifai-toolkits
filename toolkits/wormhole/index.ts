@@ -8,7 +8,7 @@ async function main() {
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
 
   await toolkit.updateToolkit({
-    name: 'Ethereum to Solana USDC Bridge',
+    name: 'WormholeBridge',
     description: "A Wormhole bridge implementation specifically for transferring USDC tokens from Ethereum to Solana",
   });
 
