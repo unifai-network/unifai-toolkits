@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
-import { getAssetPrices, getAssets, getMarkets } from "../api";
+import { getMarkets, isSupportSwapToken } from "../api";
 import { CHAINS } from "../consts";
 import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
@@ -65,7 +65,7 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, type, tokenOut } = payload;
+      const { chain, type, tokenOut, enableAggregator, marketAddress } = payload;
       const chainId = CHAINS[chain];
       if (!chainId) {
         throw new Error(`Invalid chain: ${chain}`);
@@ -79,6 +79,12 @@ toolkit.action(
       }
 
       payload.tokenOut = redefineGasToken(payload.tokenOut);
+
+      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenOut, "tokenOut");
+      if (enableAggregator && !isSupportToken) {
+        throw new Error(`Token ${payload.tokenIn} is not supported for remove liquidity`);
+      }
+
       let result: any = null;
       if (type === "dual") {
         result = await txApi.createTransaction("pendle/remove-liquidity-dual", ctx, payload);

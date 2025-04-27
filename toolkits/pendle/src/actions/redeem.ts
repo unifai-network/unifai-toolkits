@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
-import { getMarkets } from "../api";
+import { getMarkets, isSupportSwapToken } from "../api";
 import { CHAINS } from "../consts";
 import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
@@ -72,27 +72,30 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, type, tokenOut, tokenIn } = payload;
+      const { chain, type, tokenOut, tokenIn, enableAggregator } = payload;
       const chainId = CHAINS[chain];
       const markets = await getMarkets(chainId);
+      let marketAddress: string = null;
       if (IsEVMAddress(tokenIn)) {
         if (type === "PTYT") {
-          const ytToken = (
+          const market = (
             markets.find((market) => market.yt.toLowerCase() === tokenIn.toLowerCase()) ||
             markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase())
-          )?.yt;
-          if (ytToken) {
-            payload.yt = ytToken;
+          );
+          if (market) {
+            payload.yt = market.yt;
+            marketAddress = market.address;
           } else {
             return ctx.result({ error: `YT token ${tokenIn} not found` });
           }
         } else {
-          const syToken = (
+          const market = (
             markets.find((market) => market.sy.toLowerCase() === tokenIn.toLowerCase()) ||
             markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase())
-          )?.sy;
-          if (syToken) {
-            payload.sy = syToken;
+          );
+          if (market) {
+            payload.sy = market.sy;
+            marketAddress = market.address;
           } else {
             return ctx.result({ error: `SY token ${tokenIn} not found` });
           }
@@ -102,6 +105,7 @@ toolkit.action(
           const market = markets.find((market) => market.name.toLowerCase() === tokenOut.toLowerCase());
           if (market) {
             payload.yt = market.yt;
+            marketAddress = market.address;
           } else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }
@@ -109,6 +113,7 @@ toolkit.action(
           const market = markets.find((market) => market.name.toLowerCase() === tokenOut.toLowerCase());
           if (market) {
             payload.sy = market.sy;
+            marketAddress = market.address;
           } else {
             return ctx.result({ error: `Market symbol ${tokenOut} not found` });
           }
@@ -123,6 +128,11 @@ toolkit.action(
       }
       
       payload.tokenOut = redefineGasToken(payload.tokenOut);
+
+      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenOut, "tokenOut");
+      if (enableAggregator && !isSupportToken) {
+        throw new Error(`Token ${payload.tokenOut} is not supported for redeem`);
+      }
       
       let result: any = null;
       if (type === "PTYT") {
