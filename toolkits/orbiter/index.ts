@@ -4,13 +4,13 @@ dotenv.config();
 import { Toolkit, ActionContext, TransactionAPI } from "unifai-sdk";
 
 async function main() {
-  const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
-  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
+  const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY});
+  const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY});
 
   await toolkit.updateToolkit({
     name: "OrbiterFinance",
     description:
-      "Orbiter Finance provides cross-rollup bridge on EVM compatible chain, e.g. Ethereum, Base, BNB chain (BSC), Polygon, etc.",
+      "Orbiter Finance provides cross-chain bridge between various blockchains, supporting transfers between EVM chains (Ethereum, Base, BNB chain, Polygon, etc.) and non-EVM chains (Solana, etc.).",
   });
 
   toolkit.event("ready", () => {
@@ -25,23 +25,29 @@ async function main() {
         srcChain: {
           type: "string",
           description:
-            "Source evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
+            "Source chain - supports both EVM chains (ethereum, base, bnb, polygon, etc.) and non-EVM chains (solana, etc.)",
           required: true,
         },
         dstChain: {
           type: "string",
           description:
-            "Destination evm chain, for example: 'ethereum', 'base', 'bnb', 'polygon', etc",
+            "Destination chain - supports both EVM chains (ethereum, base, bnb, polygon, etc.) and non-EVM chains (solana, etc.)",
+          required: true,
+        },
+        dstAddress: {
+          type: "string",
+          description:
+            "Destination address",
           required: true,
         },
         srcTokenSymbol: {
           type: "string",
-          description: "Source token symbol, for example: ETH, USDC, USDT, etc.",
+          description: "Source token symbol, for example: ETH, USDC, USDT, WBTC, etc.",
           required: true,
         },
         dstTokenSymbol: {
           type: "string",
-          description: "Destination token symbol, for example: ETH, USDC, USDT, etc.",
+          description: "Destination token symbol, for example: ETH, USDC, USDT, WBTC, etc.",
           required: true,
         },
         amount: {
