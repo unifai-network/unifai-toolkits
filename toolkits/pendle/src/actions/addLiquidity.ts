@@ -1,10 +1,10 @@
 import * as dotenv from "dotenv";
 import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
-import { getMarkets } from "../api";
 import { CHAINS } from "../consts";
 import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
+import { isSupportSwapToken } from "@/api";
 
 toolkit.action(
   {
@@ -95,7 +95,7 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, type, marketAddress, tokenIn, amountIn } = payload;
+      const { chain, type, marketAddress, tokenIn, amountIn, enableAggregator } = payload;
       const chainId = CHAINS[chain];
       if (!chainId) {
         throw new Error(`Invalid chain: ${chain}`);
@@ -110,6 +110,11 @@ toolkit.action(
       }
 
       payload.tokenIn = redefineGasToken(payload.tokenIn);
+
+      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenIn, "tokenIn");
+      if (enableAggregator && !isSupportToken) {
+        throw new Error(`Token ${payload.tokenIn} is not supported for add liquidity`);
+      }
 
       let result: any = null;
       if (type === "dual") {

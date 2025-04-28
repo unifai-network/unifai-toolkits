@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import { ActionContext, TransactionAPI } from "unifai-sdk";
 import { toolkit, txApi } from "../config";
-import { getMarkets } from "../api";
+import { getMarkets, isSupportSwapToken } from "../api";
 import { CHAINS } from "../consts";
 import { IsEVMAddress, redefineGasToken } from "../utils";
 import { getTokenAddressBySymbol } from "@common/tokenaddress";
@@ -75,7 +75,7 @@ toolkit.action(
   },
   async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const { chain, market, tokenIn, tokenOut } = payload;
+      const { chain, market, tokenIn, tokenOut, enableAggregator } = payload;
       const chainId = CHAINS[chain];
       const markets = await getMarkets(chainId);
       if(!markets.find(m => m.address.toLowerCase() === market.toLowerCase())) {
@@ -102,6 +102,12 @@ toolkit.action(
 
       payload.tokenIn = redefineGasToken(payload.tokenIn);
       payload.tokenOut = redefineGasToken(payload.tokenOut);
+
+      const isSupportTokenIn = await isSupportSwapToken(chainId, market, payload.tokenIn, "tokenIn");
+      const isSupportTokenOut = await isSupportSwapToken(chainId, market, payload.tokenOut, "tokenOut");
+      if(enableAggregator && (!isSupportTokenIn || !isSupportTokenOut)) {
+        throw new Error(`Token ${payload.tokenIn} or ${payload.tokenOut} is not supported for swap`);
+      }
       
       const result = await txApi.createTransaction("pendle/swap", ctx, payload);
       
