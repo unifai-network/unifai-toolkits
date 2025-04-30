@@ -211,26 +211,11 @@ async function main() {
         description: 'The blockchain network name. Currently only supports BSC (BNB Chain). or Other EVM blockchains such as(Base, opBNB, Ethereum, Polygon, Linea, Aptos, Solana, ZKsync, Arbitrum) ',
         required: true,
       },
-      pid: {
+      tokenId: {
         type: 'string',
-        description: 'The pool ID of the farm where you want to stake your LP tokens.',
+        description: 'The unique identifier of the liquidity position NFT. In PancakeSwap V3, each liquidity position is represented as an NFT.',
         required: true,
       },
-      amount: {
-        type: 'string',
-        description: 'The amount of LP tokens to stake in the farm.',
-        required: true,
-      },
-      referrer: {
-        type: 'string',
-        description: 'Optional referrer address for referral rewards.',
-        required: false,
-      },
-      deadline: {
-        type: 'string',
-        description: 'The transaction deadline in seconds from now.',
-        required: false,
-      }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
