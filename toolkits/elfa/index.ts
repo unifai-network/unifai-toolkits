@@ -87,6 +87,41 @@ async function main() {
     }
   });
 
+  toolkit.action({
+    action: 'getTopMentions',
+    actionDescription: 'Get tweets that mention a given ticker symbol, ranked by view count',
+    payloadDescription: {
+      ticker: {
+        type: 'string',
+        description: 'The ticker symbol to get mentions for. Prefixing with $ will only return cashtag matches (recommended).',
+        required: true
+      },
+      timeWindow: {
+        type: 'string',
+        description: 'Time window for mentions (e.g., "1h", "24h", "7d")',
+        default: '24h',
+        required: false
+      },
+      limit: {
+        type: 'number',
+        description: 'Number of results to return, max is 100',
+        default: 10,
+        required: false
+      }
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      const result = await api.topMentions(
+        payload.ticker,
+        payload.timeWindow,
+        payload.limit,
+      );
+      return ctx.result(result);
+    } catch (error) {
+      return ctx.result({ error: `Failed to get top mentions: ${error}` });
+    }
+  });
+
   await toolkit.run();
 }
 
