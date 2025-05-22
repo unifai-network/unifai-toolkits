@@ -6,7 +6,7 @@ export enum Chain {
   BNB = 56,
   // OKTC = 66,
   // Cosmos = 118,
-  // Unichain = 130,
+  Unichain = 130,
   Polygon = 137,
   // Manta_Pacific = 169,
   // TRON = 195,
