@@ -14,7 +14,7 @@ export class ElfaAPI extends API {
   public async trendingTokens(timeWindow: string = '24h', pageSize: number = 50, minMentions: number = 10) {
     return await this.request('GET', `/trending-tokens`, {
       headers: this.headers,
-      params: { timeWindow, pageSize, minMentions, page: 1 },
+      params: { timeWindow, pageSize, minMentions },
     });
   }
 
@@ -22,6 +22,13 @@ export class ElfaAPI extends API {
     return await this.request('GET', `/mentions/search`, {
       headers: this.headers,
       params: { keywords, from, to, limit },
+    });
+  }
+
+  public async topMentions(ticker: string, timeWindow: string = '24h', pageSize: number = 10, includeAccountDetails: boolean = true) {
+    return await this.request('GET', `/top-mentions`, {
+      headers: this.headers,
+      params: { ticker, timeWindow, pageSize, includeAccountDetails },
     });
   }
 }
