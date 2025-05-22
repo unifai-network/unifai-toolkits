@@ -9,8 +9,6 @@ To build or use toolkits, check out our SDKs:
 - [JavaScript/TypeScript SDK](https://github.com/unifai-network/unifai-sdk-js)
 - [Python SDK](https://github.com/unifai-network/unifai-sdk-py)
 
-If your toolkit requires creating and sending transactions, you should put the transaction building logic in [transaction-builder](https://github.com/unifai-network/transaction-builder).
-
 ## Contributing
 
 We welcome contributions! Here's how you can help:
