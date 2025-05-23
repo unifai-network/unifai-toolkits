@@ -27,53 +27,77 @@ toolkit.action({
     const chainIds = (payload.chains as string[]).map(c => String(Chain[c]));
     const address = payload.address;
 
-    const tokenBalances = await okxApi.wallet.getAllTokenBalancesByAddress({
-      chains: chainIds.join(','),
-      address,
-    });
+    let tokenBalances = [];
+    let tokenBalancesError: Error | null = null;
+    try {
+      tokenBalances = await okxApi.wallet.getAllTokenBalancesByAddress({
+        chains: chainIds.join(','),
+        address,
+      });
+  
+      tokenBalances.forEach(data => data.tokenAssets.forEach(asset => {
+        asset['chainName'] = Chain[asset.chainIndex];
+        asset['balanceValue'] = Number(asset.balance) * Number(asset.tokenPrice);
+      }));
+    } catch (error) {
+      tokenBalancesError = error;
+    }
 
-    tokenBalances.forEach(data => data.tokenAssets.forEach(asset => {
-      asset['chainName'] = Chain[asset.chainIndex];
-      asset['balanceValue'] = Number(asset.balance) * Number(asset.tokenPrice);
-    }));
+    let defiPositions = [];
+    let defiPositionsError: Error | null = null;
+    try {
+      defiPositions = await okxApi.defi.getUserPositionList({
+        walletAddressList: chainIds.map(chainId => ({ chainId, walletAddress: address })),
+      }).then(res => res.walletIdPlatformList);
 
-    const defiPositions = await okxApi.defi.getUserPositionList({
-      walletAddressList: chainIds.map(chainId => ({ chainId, walletAddress: address })),
-    }).then(res => res.walletIdPlatformList);
-
-    for (const platform of defiPositions.flatMap(data => data.platformList)) {
-      const chainIds = Array.from(new Set(platform.networkBalanceVoList.map(vo => {
-        const chainId = vo.chainId;
-        delete vo.chainId;
-        vo['chain'] = Chain[chainId];
-        return chainId;
-      })));
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const positionDetail = await okxApi.defi.getUserPositionDetailListByPlatform({
-          analysisPlatformId: String(platform.analysisPlatformId),
-          accountIdInfoList: [
-            {
-              walletAddressList: chainIds.map(chainId => ({
-                chainId: String(chainId),
-                walletAddress: address,
-              }))
-            }
-          ]
-        });
-        platform['details'] = positionDetail.walletIdPlatformDetailList.map(data => {
-          data.networkHoldVoList.forEach(vo => {
-            vo['chain'] = Chain[vo.chainId];
-            delete vo.chainId;
+      for (const platform of defiPositions.flatMap(data => data.platformList)) {
+        const chainIds = Array.from(new Set(platform.networkBalanceVoList.map(vo => {
+          const chainId = vo.chainId;
+          delete vo.chainId;
+          vo['chain'] = Chain[chainId];
+          return chainId;
+        })));
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const positionDetail = await okxApi.defi.getUserPositionDetailListByPlatform({
+            analysisPlatformId: String(platform.analysisPlatformId),
+            accountIdInfoList: [
+              {
+                walletAddressList: chainIds.map(chainId => ({
+                  chainId: String(chainId),
+                  walletAddress: address,
+                }))
+              }
+            ]
           });
-          return data;
-        });
-      } catch { }
+          platform['details'] = positionDetail.walletIdPlatformDetailList.map(data => {
+            data.networkHoldVoList.forEach(vo => {
+              vo['chain'] = Chain[vo.chainId];
+              delete vo.chainId;
+            });
+            return data;
+          });
+        } catch { }
+      }
+    } catch (error) {
+      defiPositionsError = error;
     }
 
     return ctx.result({
-      tokenAssets: tokenBalances.flatMap(data => data.tokenAssets),
-      defiAssets: defiPositions.flatMap(data => data.platformList),
+      tokenAssets: tokenBalancesError ? {
+        success: false,
+        error: tokenBalancesError.message,
+      } : {
+        success: true,
+        data: tokenBalances.flatMap(data => data.tokenAssets)
+      },
+      defiAssets: defiPositionsError ? {
+        success: false,
+        error: defiPositionsError.message,
+      } : {
+        success: true,
+        data: defiPositions.flatMap(data => data.platformList)
+      }
     });
   } catch (error) {
     return ctx.result({ error: `Failed to get all token balances: ${error}` });
