@@ -103,8 +103,8 @@ toolkit.action(
       payload.tokenIn = redefineGasToken(payload.tokenIn);
       payload.tokenOut = redefineGasToken(payload.tokenOut);
 
-      const isSupportTokenIn = await isSupportSwapToken(chainId, market, payload.tokenIn, "tokenIn");
-      const isSupportTokenOut = await isSupportSwapToken(chainId, market, payload.tokenOut, "tokenOut");
+      const isSupportTokenIn = await isSupportSwapToken(chainId, market, payload.tokenIn, "tokensIn");
+      const isSupportTokenOut = await isSupportSwapToken(chainId, market, payload.tokenOut, "tokensOut");
       if(enableAggregator && (!isSupportTokenIn || !isSupportTokenOut)) {
         throw new Error(`Token ${payload.tokenIn} or ${payload.tokenOut} is not supported for swap`);
       }
