@@ -111,7 +111,7 @@ toolkit.action(
 
       payload.tokenIn = redefineGasToken(payload.tokenIn);
 
-      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenIn, "tokenIn");
+      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenIn, "tokensIn");
       if (enableAggregator && !isSupportToken) {
         throw new Error(`Token ${payload.tokenIn} is not supported for add liquidity`);
       }

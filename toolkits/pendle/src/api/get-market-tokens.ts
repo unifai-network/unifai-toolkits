@@ -35,7 +35,7 @@ export async function getMarketTokens(chainId: number, market: string) {
 }
 
 
-export async function isSupportSwapToken(chainId: number, market: string, token: string, type: "tokenMintSy" | "tokenRedeemSy" | "tokenIn" | "tokenOut") {
+export async function isSupportSwapToken(chainId: number, market: string, token: string, type: "tokensMintSy" | "tokensRedeemSy" | "tokensIn" | "tokensOut") {
   const tokens = await getMarketTokens(chainId, market);
   return tokens[type].includes(token.toLowerCase());
 }

@@ -80,7 +80,7 @@ toolkit.action(
 
       payload.tokenOut = redefineGasToken(payload.tokenOut);
 
-      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenOut, "tokenOut");
+      const isSupportToken = await isSupportSwapToken(chainId, marketAddress, payload.tokenOut, "tokensOut");
       if (enableAggregator && !isSupportToken) {
         throw new Error(`Token ${payload.tokenIn} is not supported for remove liquidity`);
       }
