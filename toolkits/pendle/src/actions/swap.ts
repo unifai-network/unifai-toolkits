@@ -109,12 +109,12 @@ toolkit.action(
 
       if(type === "sell") {
         // tokenIn must be SY/PT/YT
-        if(!(marketInfo.pt.toLowerCase() === tokenIn.toLowerCase() || marketInfo.yt.toLowerCase() === tokenIn.toLowerCase() || marketInfo.sy.toLowerCase() === tokenIn.toLowerCase())) {
+        if(!(marketInfo.pt.toLowerCase() === payload.tokenIn.toLowerCase() || marketInfo.yt.toLowerCase() === payload.tokenIn.toLowerCase() || marketInfo.sy.toLowerCase() === payload.tokenIn.toLowerCase())) {
           throw new Error(`TokenIn ${tokenIn} isn't SY/PT/YT in market ${market}`);
         }
       }else if(type === "buy") {
         // tokenOut must be SY/PT/YT
-        if(!(marketInfo.pt.toLowerCase() === tokenOut.toLowerCase() || marketInfo.yt.toLowerCase() === tokenOut.toLowerCase() || marketInfo.sy.toLowerCase() === tokenOut.toLowerCase())) {
+        if(!(marketInfo.pt.toLowerCase() === payload.tokenOut.toLowerCase() || marketInfo.yt.toLowerCase() === payload.tokenOut.toLowerCase() || marketInfo.sy.toLowerCase() === payload.tokenOut.toLowerCase())) {
           throw new Error(`TokenOut ${tokenOut} isn't SY/PT/YT in market ${market}`);
         }
       }else {
