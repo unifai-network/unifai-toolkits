@@ -1,0 +1,20 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "openai": "^5.0.1",
+    "unifai-sdk": "^0.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.26",
+    "typescript": "^5.8.3"
+  }
+}
