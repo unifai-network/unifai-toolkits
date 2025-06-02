@@ -46,14 +46,6 @@ toolkit.action(
               upperBinId: position.positionData.upperBinId,
               totalClaimedFeeXAmount: toUiAmount(position.positionData.totalClaimedFeeXAmount, info.tokenX.decimal),
               totalClaimedFeeYAmount: toUiAmount(position.positionData.totalClaimedFeeYAmount, info.tokenY.decimal),
-              positionBinData: position.positionData.positionBinData.map(bin => ({
-                binId: bin.binId,
-                pricePerToken: bin.pricePerToken,
-                binXAmount: toUiAmount(new BN(bin.binXAmount.split('.')[0]), info.tokenX.decimal),
-                binYAmount: toUiAmount(new BN(bin.binYAmount.split('.')[0]), info.tokenY.decimal),
-                positionXAmount: toUiAmount(new BN(bin.positionXAmount.split('.')[0]), info.tokenX.decimal),
-                positionYAmount: toUiAmount(new BN(bin.positionYAmount.split('.')[0]), info.tokenY.decimal),
-              })),
             })),
           })),
         }
