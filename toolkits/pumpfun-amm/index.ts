@@ -8,7 +8,7 @@ async function main() {
 	const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY })
 
 	await toolkit.updateToolkit({
-		name: 'PumpFun Amm',
+		name: 'PumpFun-Amm',
 		description:
 			'Pump.fun allows you to trade meme token (memecoin) on Solana',
 	})
@@ -184,11 +184,21 @@ async function main() {
 		},
 		async (ctx: ActionContext, payload: any = {}) => {
 			try {
-				const result = await api.createTransaction(
-					'sol/txid',
-					ctx,
-					payload
-				)
+				console.log('payload', payload)
+				const response = await fetch('http://localhost:8080/sol/txid', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						type: '/sol/txid',
+						payload: {
+							txid: payload.txid,
+						},
+					}),
+				})
+				const result = await response.json()
+				console.log('result', result)
 				return ctx.result(result)
 			} catch (error) {
 				return ctx.result({
