@@ -24,7 +24,8 @@ async function main() {
 			payloadDescription: {
 				userAddress: {
 					type: 'string',
-					description: 'Solana address to check balance',
+					description:
+						'Solana address to check balance, must be base58 encoded',
 					required: true,
 				},
 			},
@@ -52,12 +53,14 @@ async function main() {
 			payloadDescription: {
 				userAddress: {
 					type: 'string',
-					description: 'Solana address to check balance for',
+					description:
+						'Solana address to check balance for, must be base58 encoded',
 					required: true,
 				},
 				mint: {
 					type: 'string',
-					description: 'SPL token mint address',
+					description:
+						'SPL token mint address, must be base58 encoded',
 					required: true,
 				},
 			},
@@ -86,12 +89,14 @@ async function main() {
 			payloadDescription: {
 				userAddress: {
 					type: 'string',
-					description: "Buyer's Solana address",
+					description:
+						"Buyer's Solana address, must be base58 encoded",
 					required: true,
 				},
 				mint: {
 					type: 'string',
-					description: 'Token mint address to buy',
+					description:
+						'Token mint address to buy, must be base58 encoded',
 					required: true,
 				},
 				buyAmountHumanReadableSol: {
@@ -125,12 +130,14 @@ async function main() {
 			payloadDescription: {
 				userAddress: {
 					type: 'string',
-					description: "Seller's Solana address",
+					description:
+						"Seller's Solana address, must be base58 encoded",
 					required: true,
 				},
 				mint: {
 					type: 'string',
-					description: 'Token mint address to sell',
+					description:
+						'Token mint address to sell, must be base58 encoded',
 					required: true,
 				},
 				sellAmountHumanReadableToken: {
@@ -161,6 +168,36 @@ async function main() {
 			}
 		}
 	)
+
+	toolkit.action(
+		{
+			action: 'getTxStatus',
+			actionDescription: 'Get transaction status by transaction ID',
+			payloadDescription: {
+				txid: {
+					type: 'string',
+					description:
+						'Transaction ID to check status, must be base58 encoded, and length must be 88 characters',
+					required: true,
+				},
+			},
+		},
+		async (ctx: ActionContext, payload: any = {}) => {
+			try {
+				const result = await api.createTransaction(
+					'sol/txid',
+					ctx,
+					payload
+				)
+				return ctx.result(result)
+			} catch (error) {
+				return ctx.result({
+					error: `Failed to get transaction status: ${error}`,
+				})
+			}
+		}
+	)
+
 	await toolkit.run()
 }
 
