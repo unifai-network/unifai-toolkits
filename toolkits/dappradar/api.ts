@@ -1,8 +1,13 @@
 import { API } from 'unifai-sdk';
 
 export class DappRadarAPI extends API {
+  private headers: Record<string, string>;
+
   constructor(apiKey: string) {
-    super({ endpoint: 'https://apis.dappradar.com/v2', apiKey });
+    super({ endpoint: 'https://apis.dappradar.com/v2' });
+    this.headers = {
+      'X-API-KEY': apiKey
+    };
   }
 
   // Get Dapps by search
@@ -16,7 +21,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', '/dapps/search', { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
 
@@ -29,7 +34,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', `/dapps/top/${metric}`, { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
   
@@ -40,7 +45,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', `/dapps/${dappId}`, { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
 
@@ -52,7 +57,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', `/dapps/${dappId}/history/${metric}`, { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
 
@@ -67,7 +72,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', '/defi/dapps', { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
 
@@ -77,7 +82,7 @@ export class DappRadarAPI extends API {
   }) {
     return await this.request('GET', `/defi/dapps/${dappId}`, { 
       params,
-      headers: { 'X-API-KEY': this.getApiKey() }
+      headers: this.headers
     });
   }
 
