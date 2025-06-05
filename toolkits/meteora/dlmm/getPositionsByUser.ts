@@ -1,8 +1,8 @@
 import { ActionContext } from "unifai-sdk";
 import { connection, toolkit } from "../config";
-import DLMM, { PositionInfo } from "@meteora-ag/dlmm";
+import DLMM, { getPriceOfBinByBinId, PositionInfo } from "@meteora-ag/dlmm";
 import { PublicKey } from "@solana/web3.js";
-import { toUiAmount } from "../utils";
+import { lamportsPriceToTokenPrice, toUiAmount } from "../utils";
 import BN = require("bn.js");
 
 toolkit.action(
@@ -21,33 +21,44 @@ toolkit.action(
     try {
       const result = await DLMM.getAllLbPairPositionsByUser(connection, new PublicKey(payload.userPublicKey), { cluster: 'mainnet-beta' }).then(res => {
         return {
-          lbPairPositions: Array.from(res.values()).map(info => ({
-            lbPair: {
-              lbPairPublicKey: info.publicKey.toString(),
-              binStep: info.lbPair.binStep,
-              creator: info.lbPair.creator.toString(),
-              reserveX: info.lbPair.reserveX.toString(),
-              reserveY: info.lbPair.reserveY.toString(),
-              tokenXMint: info.lbPair.tokenXMint.toString(),
-              tokenYMint: info.lbPair.tokenYMint.toString(),
-              totalXAmount: toUiAmount(new BN(info.tokenX.amount.toString()), info.tokenX.decimal),
-              totalYAmount: toUiAmount(new BN(info.tokenY.amount.toString()), info.tokenY.decimal),
-              baseFeeBps: DLMM.calculateFeeInfo(info.lbPair.parameters.baseFactor, info.lbPair.binStep).baseFeeRatePercentage.mul(100).toNumber(),
-              protocolFeeBps: info.lbPair.parameters.protocolShare,
-            },
-            positions: info.lbPairPositionsData.map(position => ({
-              positionPublicKey: position.publicKey.toString(),
-              feeOwner: position.positionData.feeOwner.toString(),
-              feeX: toUiAmount(position.positionData.feeX, info.tokenX.decimal),
-              feeY: toUiAmount(position.positionData.feeY, info.tokenY.decimal),
-              totalXAmount: toUiAmount(new BN(position.positionData.totalXAmount.split('.')[0]), info.tokenX.decimal),
-              totalYAmount: toUiAmount(new BN(position.positionData.totalYAmount.split('.')[0]), info.tokenY.decimal),
-              lowerBinId: position.positionData.lowerBinId,
-              upperBinId: position.positionData.upperBinId,
-              totalClaimedFeeXAmount: toUiAmount(position.positionData.totalClaimedFeeXAmount, info.tokenX.decimal),
-              totalClaimedFeeYAmount: toUiAmount(position.positionData.totalClaimedFeeYAmount, info.tokenY.decimal),
-            })),
-          })),
+          lbPairPositions: Array.from(res.values()).map(info => {
+            const currentPrice = lamportsPriceToTokenPrice(getPriceOfBinByBinId(info.lbPair.activeId, info.lbPair.binStep), info.tokenX.decimal, info.tokenY.decimal);
+            return {
+              lbPair: {
+                lbPairPublicKey: info.publicKey.toString(),
+                currentPrice,
+                activeBinId: info.lbPair.activeId,
+                binStep: info.lbPair.binStep,
+                creator: info.lbPair.creator.toString(),
+                reserveX: info.lbPair.reserveX.toString(),
+                reserveY: info.lbPair.reserveY.toString(),
+                tokenXMint: info.lbPair.tokenXMint.toString(),
+                tokenYMint: info.lbPair.tokenYMint.toString(),
+                totalXAmount: toUiAmount(new BN(info.tokenX.amount.toString()), info.tokenX.decimal),
+                totalYAmount: toUiAmount(new BN(info.tokenY.amount.toString()), info.tokenY.decimal),
+                baseFeeBps: DLMM.calculateFeeInfo(info.lbPair.parameters.baseFactor, info.lbPair.binStep).baseFeeRatePercentage.mul(100).toNumber(),
+                protocolFeeBps: info.lbPair.parameters.protocolShare,
+              },
+              positions: info.lbPairPositionsData.map(position => {
+                const minPrice = lamportsPriceToTokenPrice(getPriceOfBinByBinId(position.positionData.lowerBinId, info.lbPair.binStep), info.tokenX.decimal, info.tokenY.decimal);
+                const maxPrice = lamportsPriceToTokenPrice(getPriceOfBinByBinId(position.positionData.upperBinId, info.lbPair.binStep), info.tokenX.decimal, info.tokenY.decimal);
+                return {
+                  positionPublicKey: position.publicKey.toString(),
+                  feeOwner: position.positionData.feeOwner.toString(),
+                  feeX: toUiAmount(position.positionData.feeX, info.tokenX.decimal),
+                  feeY: toUiAmount(position.positionData.feeY, info.tokenY.decimal),
+                  totalXAmount: toUiAmount(new BN(position.positionData.totalXAmount.split('.')[0]), info.tokenX.decimal),
+                  totalYAmount: toUiAmount(new BN(position.positionData.totalYAmount.split('.')[0]), info.tokenY.decimal),
+                  lowerBinId: position.positionData.lowerBinId,
+                  upperBinId: position.positionData.upperBinId,
+                  totalClaimedFeeXAmount: toUiAmount(position.positionData.totalClaimedFeeXAmount, info.tokenX.decimal),
+                  totalClaimedFeeYAmount: toUiAmount(position.positionData.totalClaimedFeeYAmount, info.tokenY.decimal),
+                  minPrice,
+                  maxPrice,
+                }
+              }),
+            }
+          }),
         }
       });
       return ctx.result(result);
