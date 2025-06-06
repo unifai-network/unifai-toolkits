@@ -1,0 +1,18 @@
+{
+  "name": "lido",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "@lidofinance/lido-ethereum-sdk": "^4.4.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "typescript": "^5.8.3",
+    "unifai-sdk": "^0.3.3",
+    "viem": "^2.30.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "ts-node": "^10.9.2"
+  }
+}
