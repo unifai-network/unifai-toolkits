@@ -11,11 +11,6 @@ toolkit.action(
         "description": "The address of the Meteora DLMM liquidity pool where liquidity will be added.",
         "required": true
       },
-      "position": {
-        "type": "string",
-        "description": "The public key of the user's liquidity position in the specified DLMM pool. If left empty, a new position will be created automatically.",
-        "required": false
-      },
       "baseAmount": {
         "type": "number",
         "description": "The amount of the base token (token x) to be deposited into the liquidity pool.",
@@ -52,12 +47,12 @@ toolkit.action(
       },
       "minPrice": {
         "type": "number",
-        "description": "Minimum price for liquidity provision. For binStep=N, the range with maxPrice must not exceed 69 bins (~69*N/10000 %). Formula: bin count = Math.ceil(Math.log(maxPrice/minPrice)/(binStep/10000)). If omitted, the price range will be set around the current price.",
+        "description": "Minimum price for liquidity provision. If the price range exceeds 69 bins, the price range will be split into multiple positions. If omitted, the price range will be set around the current price.",
         "required": false
       },
       "maxPrice": {
         "type": "number",
-        "description": "Maximum price for liquidity provision. Range with minPrice must not exceed 69 bins (~69*N/10000 % where N is binStep). Formula: bin count = Math.ceil(Math.log(maxPrice/minPrice)/(binStep/10000)). If omitted, the price range will be set around the current price.",
+        "description": "Maximum price for liquidity provision. If the price range exceeds 69 bins, the price range will be split into multiple positions. If omitted, the price range will be set around the current price.",
         "required": false
       }
     },
