@@ -2,7 +2,7 @@ import { toolkit } from "./config";
 
 import "./dlmm/addLiquidity";
 import "./dlmm/createCustomizablePool";
-import "./dlmm/createPool";
+import { initCreatePoolAction } from "./dlmm/createPool";
 import "./dlmm/getPool";
 import "./dlmm/getPosition";
 import "./dlmm/getPositionsByUser";
@@ -23,6 +23,8 @@ async function main() {
     name: "Meteora",
     description: "Meteora is a decentralized liquidity protocol on Solana offering advanced market-making solutions for efficient token trading.",
   });
+
+  await initCreatePoolAction();
 
   toolkit.event("ready", () => {
     console.log("Toolkit is ready to use");

@@ -31,12 +31,6 @@ toolkit.action(
         "description": "Initial token price at launch. Works with the liquidity distribution curve designed using the ILM tool.",
         "required": true
       },
-      "priceRoundingUp": {
-        "type": "boolean",
-        "description": "Controls whether initial price is rounded up (true) or down (false) when fitting into bins.",
-        "required": false,
-        "default": true
-      },
       "activationType": {
         "type": "number",
         "description": "Pool activation mechanism: 0 for slot-based activation, 1 for timestamp-based activation.",
