@@ -56,6 +56,7 @@ toolkit.action(
                   upperBinId: position.positionData.upperBinId,
                   minPrice,
                   maxPrice,
+                  isInRange: currentPrice >= minPrice && currentPrice <= maxPrice,
                 }
               }),
             }
