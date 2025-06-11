@@ -107,28 +107,29 @@ toolkit.action(
         payload.tokenOut = tokenOutAddress;
       }
 
+      payload.tokenIn = redefineGasToken(payload.tokenIn);
+      payload.tokenOut = redefineGasToken(payload.tokenOut);
+
       if(type === "sell") {
         // tokenIn must be SY/PT/YT
         if(!(marketInfo.pt.toLowerCase() === payload.tokenIn.toLowerCase() || marketInfo.yt.toLowerCase() === payload.tokenIn.toLowerCase() || marketInfo.sy.toLowerCase() === payload.tokenIn.toLowerCase())) {
           throw new Error(`TokenIn ${tokenIn} isn't SY/PT/YT in market ${market}`);
+        }
+        const isSupportTokenOut = await isSupportSwapToken(chainId, market, payload.tokenOut, "tokensOut");
+        if(!isSupportTokenOut) {
+          throw new Error(`TokenOut ${tokenOut} isn't supported for swap`);
         }
       }else if(type === "buy") {
         // tokenOut must be SY/PT/YT
         if(!(marketInfo.pt.toLowerCase() === payload.tokenOut.toLowerCase() || marketInfo.yt.toLowerCase() === payload.tokenOut.toLowerCase() || marketInfo.sy.toLowerCase() === payload.tokenOut.toLowerCase())) {
           throw new Error(`TokenOut ${tokenOut} isn't SY/PT/YT in market ${market}`);
         }
+        const isSupportTokenIn = await isSupportSwapToken(chainId, market, payload.tokenIn, "tokensIn");
+        if(!isSupportTokenIn) {
+          throw new Error(`TokenIn ${tokenIn} isn't supported for swap`);
+        }
       }else {
         throw new Error(`Invalid type: ${type}, need to be 'sell' or 'buy'`);
-      }
-      
-
-      payload.tokenIn = redefineGasToken(payload.tokenIn);
-      payload.tokenOut = redefineGasToken(payload.tokenOut);
-
-      const isSupportTokenIn = await isSupportSwapToken(chainId, market, payload.tokenIn, "tokensIn");
-      const isSupportTokenOut = await isSupportSwapToken(chainId, market, payload.tokenOut, "tokensOut");
-      if(enableAggregator && (!isSupportTokenIn || !isSupportTokenOut)) {
-        throw new Error(`Token ${payload.tokenIn} or ${payload.tokenOut} is not supported for swap`);
       }
       
       const result = await txApi.createTransaction("pendle/swap", ctx, payload);
