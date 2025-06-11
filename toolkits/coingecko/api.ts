@@ -35,4 +35,8 @@ export class CoingeckoAPI extends API {
   public async getTokenInfo(id: string) {
     return await this.request('GET', `/coins/${id}`, { params: { id }, headers: this.headers });
   }
+
+  public async searchPools(query: string, network: string) {
+    return await this.request('GET', `/onchain/search/pools`, { params: { query, network }, headers: this.headers });
+  }
 }
