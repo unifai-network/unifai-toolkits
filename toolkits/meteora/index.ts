@@ -8,6 +8,7 @@ import "./dlmm/getPosition";
 import "./dlmm/getPositionsByUser";
 import "./dlmm/removeLiquidity";
 import "./dlmm/searchPools";
+import "./dlmm/claimFeeAndReward";
 
 import "./dynamic/addLiquidity";
 import "./dynamic/createCustomizablePool";
