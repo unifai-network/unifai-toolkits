@@ -9,6 +9,8 @@ import "./dlmm/getPositionsByUser";
 import "./dlmm/removeLiquidity";
 import "./dlmm/searchPools";
 import "./dlmm/claimFeeAndReward";
+import "./dlmm/claimFromMultiplePositions";
+import "./dlmm/claimAndCloseMultiplePositions";
 
 import "./dynamic/addLiquidity";
 import "./dynamic/createCustomizablePool";
