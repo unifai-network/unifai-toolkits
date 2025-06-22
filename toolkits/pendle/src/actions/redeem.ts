@@ -80,7 +80,8 @@ toolkit.action(
         if (type === "PTYT") {
           const market = (
             markets.find((market) => market.yt.toLowerCase() === tokenIn.toLowerCase()) ||
-            markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase())
+            markets.find((market) => market.address.toLowerCase() === tokenIn.toLowerCase()) ||
+            markets.find((market) => market.pt.toLowerCase() === tokenIn.toLowerCase())
           );
           if (market) {
             payload.yt = market.yt;
