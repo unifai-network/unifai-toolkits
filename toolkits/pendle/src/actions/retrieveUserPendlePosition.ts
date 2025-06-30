@@ -25,6 +25,6 @@ async (ctx: ActionContext, payload: any = {}) => {
     const result = await getUserPosition(payload.wallet, payload.filterUsd);
     return ctx.result(result);
   } catch (error) {
-    return ctx.result(error);
+    return ctx.result({ error });
   }
 });
