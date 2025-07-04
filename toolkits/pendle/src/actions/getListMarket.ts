@@ -25,6 +25,12 @@ toolkit.action({
 },
 async (ctx: ActionContext, payload: any = {}) => {
   const chainId = CHAINS[payload.chain];
-  const result = await getMarkets(chainId);
-  return ctx.result(result);
+  try {
+    const result = await getMarkets(chainId);
+    return ctx.result(result);
+  } catch (error) {
+    return ctx.result({
+      error: error.message,
+    });
+  }
 });
