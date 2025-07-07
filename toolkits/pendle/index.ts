@@ -6,6 +6,8 @@ import "./src/actions/addLiquidity";
 import "./src/actions/removeLiquidity";
 // import "./src/actions/getPendleAssetInfomation";
 import "./src/actions/swap";
+import "./src/actions/retrieveUserPendlePosition";
+import "./src/actions/getMarketData";
 
 async function main() {
   await toolkit.updateToolkit({
