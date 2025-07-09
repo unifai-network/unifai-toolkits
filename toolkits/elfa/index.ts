@@ -2,11 +2,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { Toolkit, ActionContext } from 'unifai-sdk';
-import { ElfaAPI } from './api';
+import { ElfaV2API } from './api';
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
-  const api = new ElfaAPI(process.env.ELFA_API_KEY);
+  const api = new ElfaV2API(process.env.ELFA_API_KEY);
 
   await toolkit.updateToolkit({
     name: 'Elfa',
@@ -23,26 +23,42 @@ async function main() {
     payloadDescription: {
       timeWindow: {
         type: 'string',
-        description: 'Time window for trending analysis',
-        default: '24h',
+        description: 'Time window for trending analysis (e.g., "30m", "1h", "4h", "24h", "7d", "30d")',
+        default: '7d',
         required: false
       },
-      limit: {
+      from: {
         type: 'number',
-        description: 'Number of results to return, max is 100',
+        description: 'Start date (unix timestamp). Use either timeWindow OR both from and to parameters',
+        required: false
+      },
+      to: {
+        type: 'number',
+        description: 'End date (unix timestamp). Use either timeWindow OR both from and to parameters',
+        required: false
+      },
+      page: {
+        type: 'number',
+        description: 'Page number for pagination',
+        default: 1,
+        required: false
+      },
+      pageSize: {
+        type: 'number',
+        description: 'Number of items per page, max is 100',
         default: 50,
         required: false
       },
       minMentions: {
         type: 'number', 
         description: 'Minimum number of mentions required',
-        default: 10,
+        default: 5,
         required: false
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.trendingTokens(payload.timeWindow, payload.limit, payload.minMentions);
+      const result = await api.getTrendingTokens(payload);
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to get trending tokens: ${error}` });
@@ -50,75 +66,43 @@ async function main() {
   });
 
   toolkit.action({
-    action: 'searchMentions',
-    actionDescription: 'Search for mentions of specific keywords on X/Twitter recently by selected web3 KOLs',
+    action: 'getEventSummary',
+    actionDescription: 'Generate event summaries based on keyword mentions within a time period',
     payloadDescription: {
       keywords: {
         type: 'string',
-        description: 'Up to 5 keywords to search for, separated by commas. Phrases accepted',
-        required: true
-      },
-      lastDays: {
-        type: 'number',
-        description: 'Number of days to search for, min is 1, max is 30',
-        default: 7,
-        required: false
-      },
-      limit: {
-        type: 'number',
-        description: 'Number of results to return, max is 30',
-        default: 30,
-        required: false
-      }
-    }
-  }, async (ctx: ActionContext, payload: any = {}) => {
-    try {
-      const to = Math.floor(Date.now() / 1000);
-      const from = to - (payload.lastDays * 24 * 60 * 60);
-      const result = await api.mentionsSearch(
-        payload.keywords,
-        from,
-        to,
-        payload.limit
-      );
-      return ctx.result(result);
-    } catch (error) {
-      return ctx.result({ error: `Failed to search mentions: ${error}` });
-    }
-  });
-
-  toolkit.action({
-    action: 'getTopMentions',
-    actionDescription: 'Get tweets that mention a given ticker symbol, ranked by view count',
-    payloadDescription: {
-      ticker: {
-        type: 'string',
-        description: 'The ticker symbol to get mentions for. Prefixing with $ will only return cashtag matches (recommended).',
+        description: 'Keywords to search for, separated by commas',
         required: true
       },
       timeWindow: {
         type: 'string',
-        description: 'Time window for mentions (e.g., "1h", "24h", "7d")',
-        default: '24h',
+        description: 'Time window for mentions (e.g., "30m", "1h", "4h", "24h", "7d", "30d")',
+        default: '7d',
         required: false
       },
-      limit: {
+      from: {
         type: 'number',
-        description: 'Number of results to return, max is 100',
-        default: 10,
+        description: 'Start date (unix timestamp). Use either timeWindow OR both from and to parameters',
+        required: false
+      },
+      to: {
+        type: 'number',
+        description: 'End date (unix timestamp). Use either timeWindow OR both from and to parameters',
+        required: false
+      },
+      searchType: {
+        type: 'string',
+        description: 'Type of search (and, or)',
+        default: 'or',
         required: false
       }
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.topMentions(
-        payload.ticker,
-        payload.timeWindow,
-        payload.limit,
-      );
+      const result = await api.getEventSummary(payload);
       return ctx.result(result);
     } catch (error) {
-      return ctx.result({ error: `Failed to get top mentions: ${error}` });
+      return ctx.result({ error: `Failed to get event summary: ${error}` });
     }
   });
 
