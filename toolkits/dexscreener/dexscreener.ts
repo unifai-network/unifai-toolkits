@@ -25,6 +25,12 @@ export const tokenAddressMap = {
       "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     },
   },
+  "pol": {
+    "polygon": {
+      "chain": "polygon",
+      "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    },
+  },
 }
 
 export const chainAliasMap = {
