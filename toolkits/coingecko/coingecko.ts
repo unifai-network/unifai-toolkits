@@ -29,6 +29,13 @@ export const tokenAddressMap = {
       "decimal_place": 18,
     },
   },
+  "pol": {
+    "polygon": {
+      "chain": "polygon",
+      "tokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "decimal_place": 18,
+    },
+  },
 }
 
 export const chainAliasMap = {
