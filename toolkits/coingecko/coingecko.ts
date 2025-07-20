@@ -64,12 +64,24 @@ export async function getTokenBySymbol(symbol: string, chain?: string) {
   }
   const result = await api.searchToken(symbol);
   if (result.coins && result.coins.length > 0) {
-    const token = result.coins[0];
-    const tokenInfo = await api.getTokenInfo(token.id);
-    return tokenInfo.detail_platforms || tokenInfo.platforms;
-  } else {
-    return { error: 'Token not found' };
+    const token = result.coins.find(c => c.symbol.toLowerCase() === symbol.toLowerCase());
+    if (token) {
+      const tokenInfo = await api.getTokenInfo(token.id);
+      const platforms = tokenInfo.detail_platforms || tokenInfo.platforms;
+      if (platforms) {
+        if (chain) {
+          if (platforms[chain]) {
+            return {
+              [chain]: platforms[chain],
+            };
+          }
+        } else {
+          return platforms;
+        }
+      }
+    }
   }
+  return { error: 'Token not found' };
 }
 
 export async function getTokenAddressBySymbol(token: string, chain?: string) {
