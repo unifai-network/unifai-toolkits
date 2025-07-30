@@ -14,6 +14,20 @@ async function getSolanaTokenAddress(token: string) : Promise<string> {
   return token;
 }
 
+async function getTokenPrices(inputTokenAddress: string, outputTokenAddress: string): Promise<{ inputPrice: number, outputPrice: number }> {
+  try {
+    const response = await fetch(`https://lite-api.jup.ag/price/v3?ids=${inputTokenAddress},${outputTokenAddress}`);
+    const data = await response.json();
+    
+    const inputPrice = data[inputTokenAddress]?.usdPrice || 0;
+    const outputPrice = data[outputTokenAddress]?.usdPrice || 0;
+    
+    return { inputPrice, outputPrice };
+  } catch (error) {
+    throw new Error(`Failed to fetch token prices: ${error}`);
+  }
+}
+
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
   const api = new TransactionAPI({ apiKey: process.env.TOOLKIT_API_KEY });
@@ -39,9 +53,13 @@ async function main() {
         type: 'string',
         description: 'Output token address or contract address or symbol or ticker',
       },
-      amount: {
+      inAmount: {
         type: 'number',
-        description: 'Amount of input token to swap. If you want to get a certain amount of output token, you need to use the current token price to calculate the amount of input token.',
+        description: 'Exact amount of input token to swap. Only specify either inAmount OR outAmount, not both.',
+      },
+      outAmount: {
+        type: 'number',
+        description: 'Desired amount of output token to receive (estimated, not exact). Only specify either inAmount OR outAmount, not both.',
       },
       slippageBps: {
         type: 'number',
@@ -56,9 +74,14 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      payload.inputToken = await getSolanaTokenAddress(payload.inputToken);
-      payload.outputToken = await getSolanaTokenAddress(payload.outputToken);
-      
+      let inAmount = payload.inAmount || payload.amount; // For backwards compatibility
+      let outAmount = payload.outAmount;
+
+      // Validate that only one of inAmount or outAmount is specified
+      if ((inAmount && outAmount) || (!inAmount && !outAmount)) {
+        return ctx.result({ error: 'Must specify exactly one of inAmount or outAmount, not both or neither' });
+      }
+
       // Set defaults if not provided
       if (payload.slippageBps === undefined) {
         payload.slippageBps = 50;
@@ -66,6 +89,24 @@ async function main() {
       if (payload.dynamicSlippage === undefined) {
         payload.dynamicSlippage = true;
       }
+
+      payload.inputToken = await getSolanaTokenAddress(payload.inputToken);
+      payload.outputToken = await getSolanaTokenAddress(payload.outputToken);
+      
+      if (outAmount) {
+        const { inputPrice, outputPrice } = await getTokenPrices(payload.inputToken, payload.outputToken);
+
+        if (inputPrice === 0 || outputPrice === 0) {
+          return ctx.result({ error: 'Unable to fetch token prices to estimate inAmount' });
+        }
+
+        // Calculate estimated inAmount with 1% slippage buffer
+        inAmount = (outAmount * outputPrice / inputPrice) * 1.01;
+      }
+
+      payload.amount = inAmount;
+      delete payload.inAmount;
+      delete payload.outAmount;
       
       const result = await api.createTransaction('jupiter/swap', ctx, payload);
       return ctx.result(result);
