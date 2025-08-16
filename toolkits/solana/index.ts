@@ -95,7 +95,17 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      const result = await api.createTransaction('solana/transfer', ctx, payload);
+      let tokenAddress = payload.tokenAddress?.toLowerCase();
+      if (tokenAddress && (tokenAddress === 'sol' || tokenAddress === 'so11111111111111111111111111111111111111112')) {
+        tokenAddress = undefined;
+      }
+      if (tokenAddress) {
+        tokenAddress = await getSolanaTokenAddress(tokenAddress);
+      }
+      const result = await api.createTransaction('solana/transfer', ctx, {
+        ...payload,
+        tokenAddress: tokenAddress,
+      });
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
