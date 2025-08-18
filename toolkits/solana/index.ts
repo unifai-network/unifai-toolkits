@@ -95,8 +95,8 @@ async function main() {
     }
   }, async (ctx: ActionContext, payload: any = {}) => {
     try {
-      let tokenAddress = payload.tokenAddress?.toLowerCase();
-      if (tokenAddress && (tokenAddress === 'sol' || tokenAddress === 'so11111111111111111111111111111111111111112')) {
+      let tokenAddress = payload.tokenAddress;
+      if (tokenAddress && (tokenAddress.toLowerCase() === 'sol' || tokenAddress === 'So11111111111111111111111111111111111111112')) {
         tokenAddress = undefined;
       }
       if (tokenAddress) {
