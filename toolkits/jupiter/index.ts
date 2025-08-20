@@ -4,6 +4,7 @@ dotenv.config();
 import { PublicKey } from '@solana/web3.js';
 import { ActionContext, Toolkit, TransactionAPI } from 'unifai-sdk';
 import { getTokenAddressBySymbol } from '../common/tokenaddress';
+import { getTokenPrices, searchToken } from './api';
 
 async function getSolanaTokenAddress(token: string) : Promise<string> {
   try {
@@ -14,19 +15,6 @@ async function getSolanaTokenAddress(token: string) : Promise<string> {
   return token;
 }
 
-async function getTokenPrices(inputTokenAddress: string, outputTokenAddress: string): Promise<{ inputPrice: number, outputPrice: number }> {
-  try {
-    const response = await fetch(`https://lite-api.jup.ag/price/v3?ids=${inputTokenAddress},${outputTokenAddress}`);
-    const data = await response.json();
-    
-    const inputPrice = data[inputTokenAddress]?.usdPrice || 0;
-    const outputPrice = data[outputTokenAddress]?.usdPrice || 0;
-    
-    return { inputPrice, outputPrice };
-  } catch (error) {
-    throw new Error(`Failed to fetch token prices: ${error}`);
-  }
-}
 
 async function main() {
   const toolkit = new Toolkit({ apiKey: process.env.TOOLKIT_API_KEY });
@@ -112,6 +100,93 @@ async function main() {
       return ctx.result(result);
     } catch (error) {
       return ctx.result({ error: `Failed to create transaction: ${error}` });
+    }
+  });
+
+  toolkit.action({
+    action: 'searchToken',
+    actionDescription: 'Search for comprehensive Solana token information by symbol, name, or mint address. Only works for tokens on the Solana blockchain. Returns detailed token metadata including name, symbol, icon, decimals, market data (price, market cap, FDV), trading statistics (5m, 1h, 6h, 24h), liquidity info, holder count, audit status, organic score, verified status, CEX listings, and more.',
+    payloadDescription: {
+      query: {
+        type: 'array',
+        items: {
+          type: 'string'
+        },
+        description: 'Array of search queries - each can be token symbol, name, or mint address. Maximum 100 mint addresses supported.',
+        minItems: 1,
+        maxItems: 100,
+        required: true,
+      },
+    }
+  }, async (ctx: ActionContext, payload: any = {}) => {
+    try {
+      if (!payload.query || !Array.isArray(payload.query) || payload.query.length === 0) {
+        return ctx.result({ error: 'Query parameter must be a non-empty array' });
+      }
+
+      if (payload.query.length > 100) {
+        return ctx.result({ error: 'Maximum 100 queries allowed per request' });
+      }
+
+      // Filter out empty strings and non-strings, keep only valid queries
+      const validQueries = payload.query.filter((q: any) => typeof q === 'string' && q.trim().length > 0);
+      
+      if (validQueries.length === 0) {
+        return ctx.result({ error: 'No valid queries found after filtering empty strings' });
+      }
+
+      // Separate mint addresses from symbols/names for optimal API usage
+      const mintAddresses: string[] = [];
+      const symbolsAndNames: string[] = [];
+      
+      for (const query of validQueries) {
+        const trimmed = query.trim();
+        // Check if it's a valid Solana mint address using PublicKey validation
+        try {
+          new PublicKey(trimmed);
+          mintAddresses.push(trimmed);
+        } catch (error) {
+          symbolsAndNames.push(trimmed);
+        }
+      }
+      
+      const allResults: any[] = [];
+      const seenTokens = new Set<string>(); // To avoid duplicates
+      
+      // Create array of promises for concurrent execution
+      const searchPromises: Promise<any[]>[] = [];
+      
+      // Handle mint addresses in batch (comma-separated works for mint addresses)
+      if (mintAddresses.length > 0) {
+        const mintQuery = mintAddresses.join(',');
+        searchPromises.push(searchToken(mintQuery));
+      }
+      
+      // Handle symbols/names individually (comma-separated doesn't work for these)
+      for (const query of symbolsAndNames) {
+        searchPromises.push(searchToken(query));
+      }
+      
+      // Execute all searches concurrently
+      const results = await Promise.allSettled(searchPromises);
+      
+      // Process results
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          for (const token of result.value) {
+            if (!seenTokens.has(token.id)) {
+              seenTokens.add(token.id);
+              allResults.push(token);
+            }
+          }
+        } else {
+          console.warn(`Search failed: ${result.reason}`);
+        }
+      }
+      
+      return ctx.result({ tokens: allResults });
+    } catch (error) {
+      return ctx.result({ error: `Failed to search tokens: ${error}` });
     }
   });
 
