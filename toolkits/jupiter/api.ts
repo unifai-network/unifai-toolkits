@@ -8,7 +8,27 @@ export async function getTokenPrices(inputTokenAddress: string, outputTokenAddre
     
     return { inputPrice, outputPrice };
   } catch (error) {
-    throw new Error(`Failed to fetch token prices: ${error}`);
+    // If the primary API fails completely, try searchToken as fallback
+    try {
+      const tokenAddresses = [inputTokenAddress, outputTokenAddress];
+      const searchResults = await searchToken(tokenAddresses.join(','));
+      
+      let inputPrice = 0;
+      let outputPrice = 0;
+      
+      for (const token of searchResults) {
+        if (token.id === inputTokenAddress) {
+          inputPrice = token.usdPrice || 0;
+        }
+        if (token.id === outputTokenAddress) {
+          outputPrice = token.usdPrice || 0;
+        }
+      }
+      
+      return { inputPrice, outputPrice };
+    } catch (searchError) {
+      throw new Error(`Failed to fetch token prices: ${error}. Fallback also failed: ${searchError}`);
+    }
   }
 }
 
