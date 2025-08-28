@@ -12,7 +12,7 @@ toolkit.action({
       type: "string",
       description: "Target blockchain network to query asset availability. Different chains host isolated markets with unique yield-bearing assets. Select network based on target investment strategy.",
       required: true,
-      enums: ["ethereum", "base", "bsc"],
+      enums: ["ethereum", "base", "bsc", "hyperEVM"],
     },
   },
 },

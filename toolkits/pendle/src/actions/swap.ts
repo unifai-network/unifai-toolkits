@@ -19,7 +19,7 @@ toolkit.action(
         description: 
           "Blockchain network where the swap executes. Must match the chain of the `market`. Supported: 'ethereum', 'base', 'bsc'.",
         required: true,
-        enums: ["ethereum", "base", "bsc"]
+        enums: ["ethereum", "base", "bsc", "hyperEVM"]
       },
       slippage: {
         type: "number",

@@ -12,7 +12,7 @@ toolkit.action({
       type: "string",
       description: "EVM-compatible network identifier where the markets operate. Determines available liquidity pools and asset types.",
       required: true,
-      enums: ["ethereum", "base", "bsc"],
+      enums: ["ethereum", "base", "bsc", "hyperEVM"],
     },
     address: {
       type: "string",

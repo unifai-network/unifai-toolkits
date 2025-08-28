@@ -17,7 +17,7 @@ toolkit.action(
         description:
           "Blockchain network identifier where the mint operation will execute (e.g., 'ethereum', 'arbitrum'). Required to route the transaction correctly.",
         required: true,
-        enums: ["ethereum", "base", "bsc"],
+        enums: ["ethereum", "base", "bsc", "hyperEVM"],
       },
       type: {
         type: "string",
