@@ -17,7 +17,7 @@ toolkit.action(
         description:
           "Blockchain network where liquidity is added. Must match the chain of target markets. Supported: 'ethereum' (Mainnet), 'base', 'bsc'.",
         required: true,
-        enums: ["ethereum", "base", "bsc"],
+        enums: ["ethereum", "base", "bsc", "hyperEVM"],
       },
       type: {
         type: "string",
